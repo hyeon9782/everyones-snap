@@ -6,7 +6,9 @@ import PhotoCard from "@/entities/photo/ui/photo-card";
 import FullscreenViewer from "@/features/photo-viewer/ui/fullscreen-viewer";
 
 const PhotoGalleryGrid = ({ photos }: { photos: Photo[] }) => {
-  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(
+    null
+  );
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [initialPosition, setInitialPosition] = useState<{
     x: number;
@@ -15,7 +17,11 @@ const PhotoGalleryGrid = ({ photos }: { photos: Photo[] }) => {
     height: number;
   } | null>(null);
 
-  const handlePhotoClick = (photo: Photo, event: React.MouseEvent) => {
+  const handlePhotoClick = (
+    photo: Photo,
+    photoIndex: number,
+    event: React.MouseEvent
+  ) => {
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     setInitialPosition({
       x: rect.left,
@@ -23,31 +29,32 @@ const PhotoGalleryGrid = ({ photos }: { photos: Photo[] }) => {
       width: rect.width,
       height: rect.height,
     });
-    setSelectedPhoto(photo);
+    setSelectedPhotoIndex(photoIndex);
     setIsViewerOpen(true);
   };
 
   const handleCloseViewer = () => {
     setIsViewerOpen(false);
-    setSelectedPhoto(null);
+    setSelectedPhotoIndex(null);
     setInitialPosition(null);
   };
 
   return (
     <>
       <div className="grid grid-cols-3 gap-1">
-        {photos.map((photo) => (
+        {photos.map((photo, index) => (
           <div key={photo.id} className="aspect-square">
             <PhotoCard
               photo={photo}
-              onClick={(e) => handlePhotoClick(photo, e)}
+              onClick={(e) => handlePhotoClick(photo, index, e)}
             />
           </div>
         ))}
       </div>
 
       <FullscreenViewer
-        photo={selectedPhoto}
+        photos={photos}
+        selectedPhotoIndex={selectedPhotoIndex ?? 0}
         isOpen={isViewerOpen}
         onClose={handleCloseViewer}
         initialPosition={initialPosition}
