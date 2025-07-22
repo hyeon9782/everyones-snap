@@ -1,11 +1,15 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Photo } from "@/entities/photo/model/photo.types";
 import PhotoCard from "@/entities/photo/ui/photo-card";
 import FullscreenViewer from "@/features/photo-viewer/ui/fullscreen-viewer";
+import { cn } from "@/shared/lib/utils";
+import { usePhotoViewerStore } from "@/features/photo-viewer/model/store";
 
 const PhotoGalleryGrid = ({ photos }: { photos: Photo[] }) => {
+  const { viewMode } = usePhotoViewerStore();
+
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(
     null
   );
@@ -41,7 +45,14 @@ const PhotoGalleryGrid = ({ photos }: { photos: Photo[] }) => {
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-1">
+      <div
+        className={cn(
+          "grid gap-1 px-4 py-5",
+          viewMode === "grid" && "grid-cols-1",
+          viewMode === "list" && "grid-cols-2",
+          viewMode === "grid_on" && "grid-cols-3"
+        )}
+      >
         {photos.map((photo, index) => (
           <div key={photo.id} className="aspect-square">
             <PhotoCard
