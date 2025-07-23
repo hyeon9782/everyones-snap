@@ -15,7 +15,10 @@ const EventShareDrawer = () => {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button>공유</Button>
+        <Button className="bg-[#F2F2F7] flex-1 text-black text-[16px] font-semibold h-[48px]">
+          <Image src="/images/qr_code.svg" alt="share" width={20} height={20} />
+          QR/링크 공유
+        </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>

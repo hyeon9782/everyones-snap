@@ -1,8 +1,11 @@
-import { Button } from "@/shared/ui/button";
+import EventButtonBox from "@/features/event-viewer/ui/event-button-box";
 import Image from "next/image";
-import Link from "next/link";
 
-const EventCard = () => {
+type Props = {
+  isHost: boolean;
+};
+
+const EventCard = ({ isHost }: Props) => {
   return (
     <article className="bg-white rounded-lg h-[626px]">
       <Image
@@ -49,40 +52,47 @@ const EventCard = () => {
             바로 올라온 사진 덕분에 감동이 두 배였어요!
           </div>
         </div>
-        <div className="flex flex-col gap-3">
-          <Button className="bg-[#F2F2F7] text-black text-[16px] font-semibold h-[48px]">
-            <Image
-              src="/images/upload_photo.svg"
-              alt="upload"
-              width={22}
-              height={20}
-            />
-            사진/영상 업로드
-          </Button>
-          <div className="flex gap-3">
-            <Link
-              href="/gallery/1"
-              className="flex-1 flex gap-2 px-4 items-center justify-center rounded-lg bg-[#F2F2F7] text-black text-[16px] font-semibold h-[48px]"
-            >
+        {isHost && (
+          <div className="flex gap-[10px] w-full justify-center items-center">
+            <div className="flex gap-1 items-center">
               <Image
-                src="/images/gallery.svg"
-                alt="gallery"
-                width={18}
-                height={18}
+                src="/images/group.svg"
+                alt="group"
+                width={14}
+                height={14}
               />
-              갤러리 보기
-            </Link>
-            <Button className="flex-1 bg-[#F2F2F7] text-black text-[16px] font-semibold h-[48px]">
+              <span className="text-[16px] font-medium">24</span>
+            </div>
+            <div className="flex gap-1 items-center">
               <Image
-                src="/images/checkbook.svg"
-                alt="checkbook"
-                width={21.02}
-                height={16}
+                src="/images/photo.svg"
+                alt="photo"
+                width={16.67}
+                height={16.67}
               />
-              메시지 남기기
-            </Button>
+              <span className="text-[16px] font-medium">172</span>
+            </div>
+            <div className="flex gap-1 items-center">
+              <Image
+                src="/images/play_circle.svg"
+                alt="play_circle"
+                width={16.67}
+                height={16.67}
+              />
+              <span className="text-[16px] font-medium">20</span>
+            </div>
+            <div className="flex gap-1 items-center">
+              <Image
+                src="/images/message.svg"
+                alt="message"
+                width={17.5}
+                height={16.28}
+              />
+              <span className="text-[16px] font-medium">24</span>
+            </div>
           </div>
-        </div>
+        )}
+        <EventButtonBox isHost={isHost} />
       </div>
     </article>
   );
