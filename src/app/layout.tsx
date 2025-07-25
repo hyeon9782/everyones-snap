@@ -4,6 +4,7 @@ import "./globals.css";
 import DefaultLayout from "@/shared/ui/default-layout";
 import Header from "@/widgets/header";
 import Footer from "@/shared/ui/footer";
+import { QueryProvider } from "@/shared/ui/query-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,11 +31,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <DefaultLayout>
-          <Header />
-          {children}
-          <Footer />
-        </DefaultLayout>
+        <QueryProvider>
+          <DefaultLayout>
+            <Header />
+            {children}
+            <Footer />
+          </DefaultLayout>
+        </QueryProvider>
       </body>
     </html>
   );
