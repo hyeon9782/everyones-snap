@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import ScrollPicker from "./scroll-picker";
+import ScrollPicker from "../../../shared/ui/scroll-picker";
+import { parseTime } from "@/features/event-create/utils/event.utils";
 
 interface TimePickerProps {
   value?: string;
@@ -13,14 +14,6 @@ const TimePicker: React.FC<TimePickerProps> = ({
   onChange,
   className = "",
 }) => {
-  // 시간 파싱
-  const parseTime = (timeStr: string) => {
-    const [hour, minute] = timeStr.split(":").map(Number);
-    const isPM = hour >= 12;
-    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-    return { hour: displayHour, minute, isPM };
-  };
-
   const {
     hour: initialHour,
     minute: initialMinute,
@@ -30,14 +23,6 @@ const TimePicker: React.FC<TimePickerProps> = ({
   const [selectedHour, setSelectedHour] = useState(initialHour);
   const [selectedMinute, setSelectedMinute] = useState(initialMinute);
   const [isPM, setIsPM] = useState(initialIsPM);
-
-  // value prop이 변경될 때 상태 업데이트
-  useEffect(() => {
-    const parsed = parseTime(value);
-    setSelectedHour(parsed.hour);
-    setSelectedMinute(parsed.minute);
-    setIsPM(parsed.isPM);
-  }, [value]);
 
   // 옵션 배열 생성
   const hours = Array.from({ length: 12 }, (_, i) => i + 1);
@@ -58,7 +43,7 @@ const TimePicker: React.FC<TimePickerProps> = ({
       .toString()
       .padStart(2, "0")}`;
     onChange?.(timeString);
-  }, [selectedHour, selectedMinute, isPM, onChange]);
+  }, [selectedHour, selectedMinute, isPM]);
 
   return (
     <div className={`w-full max-w-lg mx-auto ${className}`}>

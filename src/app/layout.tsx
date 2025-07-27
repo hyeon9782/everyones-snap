@@ -5,6 +5,7 @@ import DefaultLayout from "@/shared/ui/default-layout";
 import Header from "@/widgets/header";
 import Footer from "@/shared/ui/footer";
 import { QueryProvider } from "@/shared/ui/query-provider";
+import { AuthProvider } from "@/shared/ui/auth-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,11 +33,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <QueryProvider>
-          <DefaultLayout>
-            <Header />
-            {children}
-            <Footer />
-          </DefaultLayout>
+          <AuthProvider>
+            <DefaultLayout>
+              <Header />
+              {children}
+              <Footer />
+            </DefaultLayout>
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>

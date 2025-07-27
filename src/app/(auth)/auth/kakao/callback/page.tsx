@@ -4,12 +4,16 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { httpClient } from "@/shared/api/base-client";
+import { setCookie } from "@/shared/lib/cookie-utils";
+import { useUserStore } from "@/features/login/model/store";
 
 const KakaoCallbackPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const { setUser } = useUserStore();
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -23,7 +27,7 @@ const KakaoCallbackPage = () => {
           throw new Error("Invalid state parameter");
         }
 
-        // 백엔드로 Access Token 전송
+        // 백엔드로 code 전송
         const response = await httpClient.post("/v1/users/login", {
           code,
           platformType: "kakao",
@@ -52,6 +56,13 @@ const KakaoCallbackPage = () => {
             localStorage.setItem("accessToken", data.accessToken);
             localStorage.setItem("refreshToken", data.refreshToken);
             localStorage.setItem("userIdx", data.userIdx);
+
+            // 쿠키에도 토큰 저장 (서버 사이드 접근용)
+            setCookie("accessToken", data.accessToken, 7);
+            setCookie("refreshToken", data.refreshToken, 7);
+
+            // httpClient에 토큰 설정
+            httpClient.setAuthToken(data.accessToken);
 
             // 상태 정리
             sessionStorage.removeItem("kakao_state");

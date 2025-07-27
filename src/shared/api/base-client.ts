@@ -76,6 +76,9 @@ class HttpClient {
     const url = this.createURL(endpoint);
     const headers = this.mergeHeaders(options.headers);
 
+    console.log("Request headers:", headers);
+    console.log("Request URL:", url);
+
     // body가 객체인 경우 JSON으로 변환
     let body = options.body;
     if (body && typeof body === "object" && !(body instanceof FormData)) {
@@ -207,7 +210,40 @@ class HttpClient {
 
   // 인증 토큰 설정
   setAuthToken(token: string): void {
+    console.log("Setting auth token:", token);
     this.setDefaultHeader("Authorization", `Bearer ${token}`);
+  }
+
+  // 저장된 토큰으로 자동 설정 (클라이언트 사이드에서만)
+  initializeAuthToken(): void {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        console.log("Initializing auth token from localStorage:", token);
+        this.setAuthToken(token);
+      } else {
+        console.log("No accessToken found in localStorage");
+      }
+    }
+  }
+
+  // 서버 사이드에서 토큰 설정 (쿠키에서 가져오기)
+  initializeServerAuthToken(cookies: any): void {
+    const token = cookies.get("accessToken")?.value;
+    if (token) {
+      console.log("Initializing auth token from cookies:", token);
+      this.setAuthToken(token);
+    } else {
+      console.log("No accessToken found in cookies");
+    }
+  }
+
+  // 토큰 직접 설정 (서버/클라이언트 모두)
+  setTokenFromString(token: string): void {
+    if (token) {
+      console.log("Setting auth token from string:", token);
+      this.setAuthToken(token);
+    }
   }
 
   // 기본 헤더 제거

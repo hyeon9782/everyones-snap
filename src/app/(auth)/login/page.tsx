@@ -1,27 +1,14 @@
-"use client";
-
-import { useRouter } from "next/navigation";
+import KakaoLoginButton from "@/features/login/ui/kakao-login-button";
 
 const LoginPage = () => {
-  const router = useRouter();
-  const handleClientLogin = async () => {
-    if (window.Kakao && window.Kakao.Auth) {
-      // State 생성 및 저장
-      const state = Math.random().toString(36).substring(2, 15);
-      sessionStorage.setItem("kakao_state", state);
-
-      window.Kakao.Auth.authorize({
-        redirectUri:
-          process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI ||
-          "http://localhost:3000/auth/kakao/callback",
-        state: state,
-      });
-    }
-  };
-
   return (
     <div className="flex justify-center items-center h-screen">
-      <button onClick={handleClientLogin}>Client Login</button>
+      <div className="flex flex-col gap-[50px] w-full px-5">
+        <span className="text-[24px] font-semibold text-center">
+          우리의 순간을 모두 함께 <br /> 기록하는 방법, 모두의 스냅
+        </span>
+        <KakaoLoginButton />
+      </div>
     </div>
   );
 };
