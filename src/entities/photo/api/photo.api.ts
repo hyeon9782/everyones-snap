@@ -2,26 +2,21 @@ import { queryKeys } from "@/shared/lib";
 import { useApiQuery } from "@/shared/lib/hooks/use-query";
 import { useApiMutation } from "@/shared/lib/hooks/use-mutation";
 import { useQueryClient } from "@tanstack/react-query";
+import { httpClient } from "@/shared/api/base-client";
 import { Photo } from "../model/photo.types";
 
 // API 함수들
 export const photoApi = {
   // 사진 목록 조회
   getPhotos: async (): Promise<Photo[]> => {
-    const response = await fetch("/api/photos");
-    if (!response.ok) {
-      throw new Error("Failed to fetch photos");
-    }
-    return response.json();
+    const response = await httpClient.get<Photo[]>("/photos");
+    return response.data;
   },
 
   // 사진 상세 조회
   getPhoto: async (id: string): Promise<Photo> => {
-    const response = await fetch(`/api/photos/${id}`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch photo");
-    }
-    return response.json();
+    const response = await httpClient.get<Photo>(`/photos/${id}`);
+    return response.data;
   },
 
   // 사진 업로드
@@ -29,26 +24,13 @@ export const photoApi = {
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await fetch("/api/photos/upload", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to upload photo");
-    }
-    return response.json();
+    const response = await httpClient.upload<Photo>("/photos/upload", formData);
+    return response.data;
   },
 
   // 사진 삭제
   deletePhoto: async (id: string): Promise<void> => {
-    const response = await fetch(`/api/photos/${id}`, {
-      method: "DELETE",
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to delete photo");
-    }
+    await httpClient.delete(`/photos/${id}`);
   },
 };
 
