@@ -1,16 +1,23 @@
 import { Button } from "@/shared/ui/button";
 import EventMorePopup from "./event-more-popup";
 import EventShareDrawer from "./event-share-drawer";
+import { Event } from "@/entities/event/model/event.types";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import dayjs from "dayjs";
 
 type Props = {
   isHost: boolean;
+  event: Event;
 };
 
-const EventButtonBox = ({ isHost }: Props) => {
-  const end = true;
+const EventButtonBox = ({ isHost, event }: Props) => {
+  const now = dayjs();
+  const end =
+    now.isAfter(dayjs(event.uploadAvailableFrom)) &&
+    now.isBefore(dayjs(event.uploadAvailableUntil));
+
   return (
     <div>
       {isHost ? (
@@ -29,7 +36,11 @@ const EventButtonBox = ({ isHost }: Props) => {
               갤러리 보기
             </Link>
           ) : (
-            <EventShareDrawer />
+            <EventShareDrawer
+              eventTitle={event.eventTitle}
+              qrImageUrl={event.qrImageUrl}
+              shortUrl={event.shortUrl}
+            />
           )}
           <EventMorePopup />
         </div>

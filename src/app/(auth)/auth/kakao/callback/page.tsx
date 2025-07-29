@@ -4,7 +4,6 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { httpClient } from "@/shared/api/base-client";
-import { setCookie } from "@/shared/lib/cookie-utils";
 import { useUserStore } from "@/features/login/model/store";
 
 const KakaoCallbackPage = () => {
@@ -57,15 +56,17 @@ const KakaoCallbackPage = () => {
             localStorage.setItem("refreshToken", data.refreshToken);
             localStorage.setItem("userIdx", data.userIdx);
 
-            // 쿠키에도 토큰 저장 (서버 사이드 접근용)
-            setCookie("accessToken", data.accessToken, 7);
-            setCookie("refreshToken", data.refreshToken, 7);
+            document.cookie = `accessToken=${data.accessToken}; path=/; max-age=3600; SameSite=Lax`;
+            document.cookie = `refreshToken=${data.refreshToken}; path=/; max-age=604800; SameSite=Lax`;
+            document.cookie = `userIdx=${data.userIdx}; path=/; max-age=604800; SameSite=Lax`;
 
             // httpClient에 토큰 설정
             httpClient.setAuthToken(data.accessToken);
 
             // 상태 정리
             sessionStorage.removeItem("kakao_state");
+
+            setUser(data);
 
             router.push(`/host/${data.userIdx}`);
           }

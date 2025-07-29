@@ -1,26 +1,31 @@
 import EventButtonBox from "@/features/event-viewer/ui/event-button-box";
+import { Event } from "@/entities/event/model/event.types";
 import Image from "next/image";
+import dayjs from "dayjs";
 
 type Props = {
   isHost: boolean;
+  event: Event;
 };
 
-const EventCard = ({ isHost }: Props) => {
+const EventCard = ({ isHost, event }: Props) => {
   return (
     <article className="bg-white rounded-lg h-[626px]">
       <Image
-        src="https://d7aw056umshyd.cloudfront.net/mywedlog/post/original/f29be00f-6783-4d15-b0d3-c6745c06f2a9.jpg"
+        src={event.mainImageUrl}
         alt="event-card-thumbnail"
-        width={100}
-        height={100}
+        width={375}
+        height={228}
         className="w-full h-[228px] object-cover rounded-t-lg"
       />
       <div className="p-5 flex flex-col gap-[32px]">
         <div className="flex flex-col gap-5 text-center">
           <div className="flex flex-col gap-2">
-            <span className="text-[16px] font-medium">2025.05.25</span>
+            <span className="text-[16px] font-medium">
+              {dayjs(event.eventDt).format("YYYY.MM.DD")}
+            </span>
             <span className="text-[22px] font-semibold">
-              김진우❤️이도희 결혼식
+              {event.eventTitle}
             </span>
             <div className="flex gap-3 justify-center">
               <div className="flex gap-1">
@@ -31,7 +36,7 @@ const EventCard = ({ isHost }: Props) => {
                   height={16.1}
                 />
                 <span className="text-[16px] font-medium">
-                  신라호텔 다이너스티홀
+                  {event.location}
                 </span>
               </div>
               <div className="flex gap-1">
@@ -41,16 +46,14 @@ const EventCard = ({ isHost }: Props) => {
                   width={17.04}
                   height={16.02}
                 />
-                <span className="text-[16px] font-medium">10:00</span>
+                <span className="text-[16px] font-medium">
+                  {event.eventDt.split("T")[1].split(":")[0]}:
+                  {event.eventDt.split("T")[1].split(":")[1]}
+                </span>
               </div>
             </div>
           </div>
-          <div className="text-[14px] font-medium">
-            웨딩 본식 끝나고 바로 올라온 사진 덕분에 감동이 두 배였어요! 웨딩
-            본식 끝나고 바로 올라온 사진 덕분에 감동이 두 배였어요! 웨딩 본식
-            끝나고 바로 올라온 사진 덕분에 감동이 두 배였어요! 웨딩 본식 끝나고
-            바로 올라온 사진 덕분에 감동이 두 배였어요!
-          </div>
+          <div className="text-[14px] font-medium">{event.eventIntro}</div>
         </div>
         {isHost && (
           <div className="flex gap-[10px] w-full justify-center items-center">
@@ -92,7 +95,7 @@ const EventCard = ({ isHost }: Props) => {
             </div>
           </div>
         )}
-        <EventButtonBox isHost={isHost} />
+        <EventButtonBox isHost={isHost} event={event} />
       </div>
     </article>
   );

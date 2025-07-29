@@ -24,13 +24,13 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "i.namu.wiki",
+        hostname: "s3-ap-northeast-2.amazonaws.com",
         port: "",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "img6.yna.co.kr",
+        hostname: "everyonesnap.s3.ap-northeast-2.amazonaws.com",
         port: "",
         pathname: "/**",
       },

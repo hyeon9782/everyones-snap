@@ -22,19 +22,18 @@ const HostPage = async ({ params }: { params: Promise<{ id: string }> }) => {
     console.log("No accessToken found in cookies");
   }
 
-  try {
-    const { data: eventList } = await getEventList(Number(id));
-    console.log("eventList", eventList);
-  } catch (error) {
-    console.error("Failed to fetch event list:", error);
-    // 에러 발생 시 빈 배열로 처리
-    const eventList = [];
-  }
+  const { data: eventList } = await getEventList(Number(id)).then(
+    (res) => res.data
+  );
+
+  console.log("eventList", eventList);
 
   return (
     <div className="bg-[#F2F2F7] ">
       <div className="px-4 py-10">
-        <EventCard isHost={true} />
+        {eventList?.map((event) => (
+          <EventCard isHost={true} key={event.eventIdx} event={event} />
+        ))}
       </div>
       <div className="fixed bottom-0 w-full bg-white h-[90px] flex justify-center items-center px-5">
         <Link
