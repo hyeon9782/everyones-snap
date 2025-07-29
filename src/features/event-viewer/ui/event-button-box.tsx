@@ -22,9 +22,9 @@ const EventButtonBox = ({ isHost, event }: Props) => {
     <div>
       {isHost ? (
         <div className="flex gap-2">
-          {end ? (
+          {!end ? (
             <Link
-              href="/gallery/1"
+              href={`/gallery/${event.qrToken}`}
               className="bg-[#F2F2F7] flex-1 flex gap-2 items-center justify-center text-black text-[16px] font-semibold h-[48px] rounded-lg"
             >
               <Image
@@ -42,7 +42,7 @@ const EventButtonBox = ({ isHost, event }: Props) => {
               shortUrl={event.shortUrl}
             />
           )}
-          <EventMorePopup />
+          <EventMorePopup eventId={event.eventIdx} event={event} />
         </div>
       ) : (
         <div className="flex flex-col gap-3">

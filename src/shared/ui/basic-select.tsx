@@ -30,7 +30,7 @@ const BasicSelect = ({
     <Select value={value} onValueChange={onChange} defaultValue={initialValue}>
       <SelectTrigger
         className={cn(
-          "min-w-[180px] border-none shadow-none text-[16px] text-[#8E8E93] font-medium p-0",
+          "w-[180px] border-none shadow-none text-[16px] text-[#8E8E93] font-medium p-0",
           className
         )}
       >

@@ -10,7 +10,7 @@ type Props = {
 
 const EventCard = ({ isHost, event }: Props) => {
   return (
-    <article className="bg-white rounded-lg h-[626px]">
+    <article className="bg-white rounded-lg ">
       <Image
         src={event.mainImageUrl}
         alt="event-card-thumbnail"

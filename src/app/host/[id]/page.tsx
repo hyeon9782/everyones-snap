@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { httpClient } from "@/shared/api/base-client";
+import EventFilterBox from "@/features/event-viewer/ui/event-filter-box";
 
 const HostPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
@@ -29,15 +30,16 @@ const HostPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   console.log("eventList", eventList);
 
   return (
-    <div className="bg-[#F2F2F7] ">
-      <div className="px-4 py-10">
+    <div className="bg-[#F2F2F7] flex flex-col gap-5">
+      <EventFilterBox />
+      <div className="px-4 pb-[90px]">
         {eventList?.map((event) => (
           <EventCard isHost={true} key={event.eventIdx} event={event} />
         ))}
       </div>
       <div className="fixed bottom-0 w-full bg-white h-[90px] flex justify-center items-center px-5">
         <Link
-          href="/event/create"
+          href="/event/edit"
           className="w-full rounded-[10px] h-[50px] flex justify-center gap-[6px] items-center text-[18px] font-semibold text-black bg-[#F2F2F7]"
         >
           <Image

@@ -4,19 +4,30 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerClose,
-  DrawerTrigger,
 } from "@/shared/ui/drawer";
 import { Button } from "@/shared/ui/button";
 import Image from "next/image";
 import { Progress } from "@/shared/ui/progress";
 import { X } from "lucide-react";
+import { Event } from "@/entities/event/model/event.types";
+import dayjs from "dayjs";
 
-const EventDetailDrawer = () => {
+type Props = {
+  isOpen: boolean;
+  close: () => void;
+  event: Event;
+};
+
+const eventCategoryMap: Record<number, string> = {
+  1: "웨딩",
+  2: "여행",
+  3: "파티",
+  4: "기타",
+};
+
+const EventDetailDrawer = ({ event, isOpen, close }: Props) => {
   return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button>상세정보</Button>
-      </DrawerTrigger>
+    <Drawer open={isOpen} onOpenChange={close}>
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>이벤트 상세 정보</DrawerTitle>
@@ -32,11 +43,9 @@ const EventDetailDrawer = () => {
         <div className="flex flex-col gap-3 items-center p-5">
           <div className="px-5 py-4 bg-[#F2F2F7] flex items-center gap-3 rounded-[20px]">
             <div className="bg-white rounded-[8px] px-3 py-1 text-[16px] font-medium">
-              웨딩
+              {eventCategoryMap[event.eventCategoryIdx]}
             </div>
-            <div className="text-[16px] font-semibold">
-              김진우 이도희 결혼식
-            </div>
+            <div className="text-[16px] font-semibold">{event.eventTitle}</div>
           </div>
           {/* 날짜 정보 */}
           <div className="flex items-center gap-3 bg-[#F2F2F7] w-full rounded-[20px] px-5 py-4 flex-col">
@@ -52,7 +61,9 @@ const EventDetailDrawer = () => {
                 </div>
                 <span className="text-[16px] font-medium">생성일자</span>
               </div>
-              <div className="text-[16px] font-normal">2025.07.23</div>
+              <div className="text-[16px] font-normal">
+                {dayjs(event.createDt).format("YYYY.MM.DD")}
+              </div>
             </div>
             <div className="flex justify-between items-center w-full">
               <div className="flex items-center gap-2">
@@ -68,7 +79,9 @@ const EventDetailDrawer = () => {
                   업로드 가능 기간
                 </span>
               </div>
-              <div className="text-[16px] font-normal">2025.07.23 까지</div>
+              <div className="text-[16px] font-normal">
+                {dayjs(event.uploadAvailableFrom).format("YYYY.MM.DD")} 까지
+              </div>
             </div>
             <div className="flex justify-between items-center w-full">
               <div className="flex items-center gap-2">
@@ -84,7 +97,9 @@ const EventDetailDrawer = () => {
                   다운로드 가능 기간
                 </span>
               </div>
-              <div className="text-[16px] font-normal">2025.07.23 까지</div>
+              <div className="text-[16px] font-normal">
+                {dayjs(event.uploadAvailableUntil).format("YYYY.MM.DD")} 까지
+              </div>
             </div>
           </div>
           {/* 컨텐츠 정보 */}
