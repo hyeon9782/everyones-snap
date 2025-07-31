@@ -22,7 +22,7 @@ const EventButtonBox = ({ isHost, event }: Props) => {
     <div>
       {isHost ? (
         <div className="flex gap-2">
-          {!end ? (
+          {!false ? (
             <Link
               href={`/gallery/${event.qrToken}`}
               className="bg-[#F2F2F7] flex-1 flex gap-2 items-center justify-center text-black text-[16px] font-semibold h-[48px] rounded-lg"
