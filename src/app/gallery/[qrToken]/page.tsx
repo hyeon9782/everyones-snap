@@ -5,6 +5,7 @@ import Image from "next/image";
 import { getPhotos } from "@/features/photo-viewer/api/api";
 import UploadDrawer from "@/features/photo-upload/ui/upload-drawer";
 import GalleryFilterDrawer from "@/features/photo-viewer/ui/gallery-filter-drawer";
+import FileInfoDrawer from "@/features/photo-viewer/ui/file-info-drawer";
 
 const GalleryPage = async ({
   params,
@@ -46,6 +47,7 @@ const GalleryPage = async ({
           <div className="flex items-center gap-2">
             <GridTypeTabs />
             <GalleryFilterDrawer />
+            <FileInfoDrawer />
             <Button
               size="icon"
               className="w-[36px] h-[36px] rounded-full shadow-none bg-[#F2F2F7]"

@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import DefaultLayout from "@/shared/ui/default-layout";
 import Header from "@/widgets/header";
-import Footer from "@/shared/ui/footer";
+import Footer from "@/widgets/footer";
 import { QueryProvider } from "@/shared/ui/query-provider";
 import { AuthProvider } from "@/shared/ui/auth-provider";
 

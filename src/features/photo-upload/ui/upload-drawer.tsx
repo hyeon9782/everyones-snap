@@ -11,7 +11,6 @@ import {
 import { X, Upload, Camera, Video, Check, AlertCircle } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { useState, useRef, useCallback } from "react";
-import { cn } from "@/shared/lib/utils";
 import { getPresignedUrl, uploadPhotos } from "../api/photo.api";
 
 interface UploadFile {
@@ -71,9 +70,16 @@ const UploadDrawer = () => {
         if (xhr.status === 200) {
           // S3 업로드 완료, 이제 서버에 메타정보 전송
           try {
+            // FormData를 사용하여 파일 전송
+            const formData = new FormData();
+            formData.append("eventIdx", "1");
+            formData.append("files", uploadFile.file);
+
+            // 또는 uploadPhotos API가 FormData를 받지 않는다면
+            // 파일 정보만 전송하는 방식으로 변경
             await uploadPhotos({
               eventIdx: 1,
-              files: [uploadFile.file],
+              files: [uploadFile.file], // 이 부분이 문제일 수 있음
             });
 
             // 모든 과정 완료
@@ -92,12 +98,6 @@ const UploadDrawer = () => {
               )
             );
           }
-        } else {
-          setFiles((prev) =>
-            prev.map((f) =>
-              f.id === uploadFile.id ? { ...f, status: "error" } : f
-            )
-          );
         }
       });
 
