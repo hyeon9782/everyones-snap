@@ -12,6 +12,7 @@ import { X, Upload, Camera, Video, Check, AlertCircle } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { useState, useRef, useCallback } from "react";
 import { getPresignedUrl, uploadPhotos } from "../api/photo.api";
+import Image from "next/image";
 
 interface UploadFile {
   id: string;
@@ -162,7 +163,17 @@ const UploadDrawer = () => {
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
-        <Button>업로드</Button>
+        <Button className="flex-1 text-[16px] font-semibold flex items-center gap-2 bg-[#F1F5F9] rounded-xl h-[48px] text-[#344054]">
+          <div className="w-[24px] h-[24px] flex items-center justify-center">
+            <Image
+              src="/images/upload_photo.svg"
+              alt="upload"
+              width={22}
+              height={20}
+            />
+          </div>
+          업로드
+        </Button>
       </DrawerTrigger>
       <DrawerContent className="max-h-[85vh]">
         <DrawerHeader className="relative">

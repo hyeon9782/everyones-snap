@@ -12,12 +12,18 @@ import { Button } from "@/shared/ui/button";
 import { X } from "lucide-react";
 import { Switch } from "@/shared/ui/switch";
 import BasicSelect from "@/shared/ui/basic-select";
+import Image from "next/image";
 
 const GalleryFilterDrawer = () => {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button>Filter</Button>
+        <Button
+          size="icon"
+          className="w-[36px] h-[36px] rounded-full shadow-none bg-[#F2F2F7]"
+        >
+          <Image src="/images/filter.svg" alt="filter" width={15} height={15} />
+        </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>

@@ -47,7 +47,7 @@ const PhotoGalleryGrid = ({ photos }: { photos: Photo[] }) => {
     <>
       <div
         className={cn(
-          "grid gap-1 px-4 py-5",
+          "h-screen grid gap-1 px-4 py-5",
           viewMode === "grid" && "grid-cols-1",
           viewMode === "list" && "grid-cols-2",
           viewMode === "grid_on" && "grid-cols-3"
