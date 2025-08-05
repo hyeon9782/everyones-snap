@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Photo } from "../model/photo.types";
 import { cn } from "@/shared/lib/utils";
+import { usePhotoViewerStore } from "@/features/photo-viewer/model/store";
 
 interface PhotoCardProps {
   photo: Photo;
@@ -19,13 +20,31 @@ const PhotoCard = ({
   onClick,
   className,
 }: PhotoCardProps) => {
+  const { selectedPhotos, setSelectedPhotos, isSelecting } =
+    usePhotoViewerStore();
+
+  const handleClick = (event: React.MouseEvent) => {
+    if (isSelecting) {
+      if (selectedPhotos.includes(photo)) {
+        setSelectedPhotos(
+          selectedPhotos.filter((p) => p.fileIdx !== photo.fileIdx)
+        );
+      } else {
+        setSelectedPhotos([...selectedPhotos, photo]);
+      }
+    } else {
+      onClick?.(event);
+    }
+  };
+
   return (
     <div
       className={cn(
         "relative w-full h-full cursor-pointer overflow-hidden",
-        className
+        className,
+        selectedPhotos.includes(photo) && "border-2 border-blue-500"
       )}
-      onClick={onClick}
+      onClick={handleClick}
     >
       {width && height ? (
         <Image

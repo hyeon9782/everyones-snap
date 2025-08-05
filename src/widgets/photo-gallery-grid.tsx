@@ -73,9 +73,9 @@ const PhotoGalleryGrid = ({ photos }: { photos: Photo[] }) => {
 
   return (
     <>
-      <div className={cn("h-screen px-4 py-5", getContainerClasses())}>
+      <div className={cn("min-h-screen px-4 py-5", getContainerClasses())}>
         {photos.map((photo, index) => (
-          <div key={photo.fileIdx} className={getItemClasses()}>
+          <div key={`${photo.fileIdx}-${index}`} className={getItemClasses()}>
             <PhotoCard
               photo={photo}
               onClick={(e) => handlePhotoClick(photo, index, e)}

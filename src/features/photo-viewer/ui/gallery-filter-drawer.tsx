@@ -13,8 +13,18 @@ import { X } from "lucide-react";
 import { Switch } from "@/shared/ui/switch";
 import BasicSelect from "@/shared/ui/basic-select";
 import Image from "next/image";
+import { usePhotoViewerStore } from "../model/store";
 
 const GalleryFilterDrawer = () => {
+  const onlyMyFiles = usePhotoViewerStore((state) => state.onlyMyFiles);
+  const setOnlyMyFiles = usePhotoViewerStore((state) => state.setOnlyMyFiles);
+  const fileType = usePhotoViewerStore((state) => state.fileType);
+  const setFileType = usePhotoViewerStore((state) => state.setFileType);
+  const sortBy = usePhotoViewerStore((state) => state.sortBy);
+  const setSortBy = usePhotoViewerStore((state) => state.setSortBy);
+  const sortOrder = usePhotoViewerStore((state) => state.sortOrder);
+  const setSortOrder = usePhotoViewerStore((state) => state.setSortOrder);
+
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -43,7 +53,12 @@ const GalleryFilterDrawer = () => {
               내가 업로드한 파일만 보기
             </span>
             <div>
-              <Switch />
+              <Switch
+                checked={onlyMyFiles === "y"}
+                onCheckedChange={() =>
+                  setOnlyMyFiles(onlyMyFiles === "y" ? "n" : "y")
+                }
+              />
             </div>
           </div>
           <div className="bg-[#F2F2F7] rounded-lg p-4 w-full space-y-4">
@@ -51,15 +66,10 @@ const GalleryFilterDrawer = () => {
               <span className="font-medium text-[16px]">정렬 기준</span>
               <div>
                 <BasicSelect
-                  items={[
-                    { label: "업로드한 시간", value: "uploadTime" },
-                    { label: "업로드한 사람", value: "uploadUser" },
-                    { label: "촬영 시간", value: "shootingTime" },
-                    { label: "북마크", value: "bookmark" },
-                  ]}
-                  initialValue="uploadTime"
+                  items={[{ label: "업로드한 시간", value: "createDt" }]}
+                  value={sortBy}
                   className="w-fit max-h-[24px]"
-                  onChange={() => {}}
+                  onChange={(value) => setSortBy(value as "createDt")}
                   placeholder="파일 종류"
                 />
               </div>
@@ -70,12 +80,12 @@ const GalleryFilterDrawer = () => {
               <div>
                 <BasicSelect
                   items={[
-                    { label: "최신순", value: "latest" },
-                    { label: "오래된순", value: "oldest" },
+                    { label: "최신순", value: "DESC" },
+                    { label: "오래된순", value: "ASC" },
                   ]}
-                  initialValue="latest"
+                  value={sortOrder}
                   className="w-fit max-h-[24px]"
-                  onChange={() => {}}
+                  onChange={(value) => setSortOrder(value as "DESC" | "ASC")}
                   placeholder="파일 종류"
                 />
               </div>
@@ -90,21 +100,28 @@ const GalleryFilterDrawer = () => {
                   { label: "이미지", value: "image" },
                   { label: "영상", value: "video" },
                 ]}
-                initialValue="all"
+                value={fileType}
                 className="w-fit max-h-[24px]"
-                onChange={() => {}}
+                onChange={(value) =>
+                  setFileType(value as "all" | "image" | "video")
+                }
                 placeholder="파일 종류"
               />
             </div>
           </div>
-          <div className="flex items-center justify-between bg-[#F2F2F7] rounded-lg p-4 w-full">
+          {/* <div className="flex items-center justify-between bg-[#F2F2F7] rounded-lg p-4 w-full">
             <span className="font-medium text-[16px]">
               다운로드 안한 파일만 보기
             </span>
             <div>
-              <Switch />
+              <Switch
+                checked={bookmarked === "y"}
+                onCheckedChange={() =>
+                  setBookmarked(bookmarked === "y" ? "n" : "y")
+                }
+              />
             </div>
-          </div>
+          </div> */}
         </div>
       </DrawerContent>
     </Drawer>
