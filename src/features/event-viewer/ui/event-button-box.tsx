@@ -18,13 +18,15 @@ const EventButtonBox = ({ isHost, event }: Props) => {
     now.isAfter(dayjs(event.uploadAvailableFrom)) &&
     now.isBefore(dayjs(event.uploadAvailableUntil));
 
+  console.log("event", event);
+
   return (
     <div>
       {isHost ? (
         <div className="flex gap-2">
           {!false ? (
             <Link
-              href={`/gallery/${event.qrToken}`}
+              href={`/gallery/${event.qrToken}?eventIdx=${event.eventIdx}`}
               className="bg-[#F2F2F7] flex-1 flex gap-2 items-center justify-center text-black text-[16px] font-semibold h-[48px] rounded-lg"
             >
               <Image
@@ -57,7 +59,7 @@ const EventButtonBox = ({ isHost, event }: Props) => {
           </Button>
           <div className="flex gap-3">
             <Link
-              href="/gallery/1"
+              href={`/gallery/${event.qrToken}?eventIdx=${event.eventIdx}`}
               className="flex-1 flex gap-2 px-4 items-center justify-center rounded-lg bg-[#F2F2F7] text-black text-[16px] font-semibold h-[48px]"
             >
               <Image

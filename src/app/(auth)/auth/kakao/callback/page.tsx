@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { httpClient } from "@/shared/api/base-client";
 import { useUserStore } from "@/features/login/model/store";
+import { setCookie } from "@/shared/lib/cookie-utils";
 
 const KakaoCallbackPage = () => {
   const router = useRouter();
@@ -39,26 +40,19 @@ const KakaoCallbackPage = () => {
           const { data } = response.data;
 
           if (data.isNewUser) {
-            const response = await httpClient.post(`/v1/users/signUp`, {
-              id: data.id,
-              platformType: "kakao",
-              personalInfo: "y",
-              terms: "y",
-              marketing: "y",
-            });
-
-            console.log("signUp response:", response);
-
-            router.push(`/host/${data.id}`);
+            // 새 사용자인 경우 sessionStorage에 id 저장하고 term 페이지로 이동
+            sessionStorage.setItem("tempUserId", data.id);
+            router.push("/term");
           } else {
             // 완전한 로그인
             localStorage.setItem("accessToken", data.accessToken);
             localStorage.setItem("refreshToken", data.refreshToken);
             localStorage.setItem("userIdx", data.userIdx);
 
-            document.cookie = `accessToken=${data.accessToken}; path=/; max-age=3600; SameSite=Lax`;
-            document.cookie = `refreshToken=${data.refreshToken}; path=/; max-age=604800; SameSite=Lax`;
-            document.cookie = `userIdx=${data.userIdx}; path=/; max-age=604800; SameSite=Lax`;
+            // 쿠키 설정 (올바른 방식)
+            setCookie("accessToken", data.accessToken, 1); // 1일
+            setCookie("refreshToken", data.refreshToken, 7); // 7일
+            setCookie("userIdx", data.userIdx, 7); // 7일
 
             // httpClient에 토큰 설정
             httpClient.setAuthToken(data.accessToken);

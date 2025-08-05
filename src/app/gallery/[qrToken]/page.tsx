@@ -5,15 +5,29 @@ import { getPhotos } from "@/features/photo-viewer/api/api";
 import UploadDrawer from "@/features/photo-upload/ui/upload-drawer";
 import Link from "next/link";
 import GalleryToolbar from "@/features/photo-viewer/ui/gallery-toolbar";
+import { cookies } from "next/headers";
 
 const GalleryPage = async ({
   params,
+  searchParams,
 }: {
   params: Promise<{ qrToken: string }>;
+  searchParams: Promise<{ eventIdx: string }>;
 }) => {
   const { qrToken } = await params;
+  const cookieStore = await cookies();
+  const userIdx = cookieStore.get("userIdx")?.value;
 
-  const response = await getPhotos(qrToken);
+  const response = await getPhotos({
+    qrToken,
+    userIdx,
+    guestIdx: 0,
+    onlyMyFiles: "n",
+    fileType: "all",
+    sortBy: "createDt",
+    bookmarked: "n",
+    sortOrder: "DESC",
+  });
 
   console.log("response", response);
 
@@ -30,7 +44,7 @@ const GalleryPage = async ({
             height={13.33}
           />
         </Button>
-        <UploadDrawer />
+        <UploadDrawer eventIdx={Number(response.event.eventIdx)} />
         <Link
           href={`/guestbook/${qrToken}`}
           className="flex-1 flex items-center justify-center gap-2 bg-[#F1F5F9] rounded-xl h-[48px] text-[16px] font-semibold text-[#344054]"

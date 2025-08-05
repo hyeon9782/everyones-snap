@@ -175,14 +175,14 @@ const FullscreenViewer = ({
                 <CarouselContent className="w-full h-full -ml-0">
                   {reorderedPhotos.map((photo, index) => (
                     <CarouselItem
-                      key={`${photo.id}-${index}`}
+                      key={`${photo.fileIdx}-${index}`}
                       className="h-full pl-0 basis-full min-h-screen"
                     >
                       <div className="relative w-full h-full flex items-center justify-center min-h-screen">
                         <div className="relative w-full h-full min-h-screen">
                           <Image
                             src={photo.url}
-                            alt={photo.title}
+                            alt={photo.mediaType}
                             fill
                             sizes="100vw"
                             className="object-contain"
