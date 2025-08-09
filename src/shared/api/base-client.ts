@@ -176,10 +176,16 @@ class HttpClient {
   // DELETE 요청
   async delete<T>(
     endpoint: string,
+    body?: any,
     headers?: Record<string, string>,
     signal?: AbortSignal
   ): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: "DELETE", headers, signal });
+    return this.request<T>(endpoint, {
+      method: "DELETE",
+      body,
+      headers,
+      signal,
+    });
   }
 
   // 파일 업로드

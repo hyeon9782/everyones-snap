@@ -231,6 +231,8 @@ const FullscreenViewer = ({
                 }`}
               />
               <FileMorePopup
+                userIdx={photos[currentOriginalIndex].userIdx}
+                guestIdx={photos[currentOriginalIndex].guestIdx}
                 eventIdx={photos[currentOriginalIndex].eventIdx}
                 fileIdx={photos[currentOriginalIndex].fileIdx}
               />

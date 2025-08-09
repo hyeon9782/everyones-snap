@@ -146,3 +146,23 @@ export const getFileInfo = async ({
     .get(`/v1/events/${eventIdx}/gallery/file/${fileIdx}`)
     .then((res) => (res.data as any).data);
 };
+
+export const deletePhoto = async ({
+  eventIdx,
+  fileIdxList,
+  userIdx,
+  guestIdx,
+}: {
+  eventIdx: number;
+  fileIdxList: number[];
+  userIdx?: number;
+  guestIdx?: number;
+}) => {
+  return httpClient
+    .delete(`/v1/events/${eventIdx}/gallery`, {
+      fileIdxList,
+      userIdx,
+      guestIdx,
+    })
+    .then((res) => (res.data as any).data);
+};
