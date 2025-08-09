@@ -6,3 +6,10 @@ export interface GalleryResponse {
   files: Photo[];
   event: Event;
 }
+
+export interface FileInfo {
+  fileName: string;
+  fileSize: number;
+  uploadedBy: string;
+  createdDate: string;
+}

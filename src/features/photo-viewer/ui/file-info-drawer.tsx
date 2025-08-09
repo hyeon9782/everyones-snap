@@ -4,19 +4,32 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "@/shared/ui/drawer";
 import { X } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import Image from "next/image";
+import dayjs from "dayjs";
+import { formatFileSize } from "@/shared/lib/file-utils";
+import { FileInfo } from "../model/types";
 
-const FileInfoDrawer = () => {
+interface FileInfoDrawerProps {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  fileInfo: FileInfo;
+}
+
+const FileInfoDrawer = ({
+  isOpen,
+  onOpenChange,
+  fileInfo,
+}: FileInfoDrawerProps) => {
   return (
-    <Drawer>
-      <DrawerTrigger>파일 정보</DrawerTrigger>
+    <Drawer open={isOpen} onOpenChange={onOpenChange}>
       <DrawerContent>
         <DrawerHeader>
-          <DrawerTitle>파일 정보</DrawerTitle>
+          <DrawerTitle className="text-[18px] font-semibold">
+            파일 정보
+          </DrawerTitle>
           <DrawerClose asChild className="absolute right-3 top-8">
             <Button variant="ghost" size="icon" className="w-[36px] h-[36px]">
               <X
@@ -41,7 +54,9 @@ const FileInfoDrawer = () => {
                 </div>
                 <span className="font-medium">생성일자</span>
               </div>
-              <span className="font-normal">2025.05.25</span>
+              <span className="font-normal">
+                {dayjs(fileInfo.createdDate).format("YYYY.MM.DD")}
+              </span>
             </div>
             {/* 업로드한 사람 */}
             <div className="flex justify-between items-center">
@@ -56,9 +71,9 @@ const FileInfoDrawer = () => {
                 </div>
                 <span className="font-medium">업로드한 사람</span>
               </div>
-              <span className="font-normal">홍길동</span>
+              <span className="font-normal">{fileInfo.uploadedBy}</span>
             </div>
-            {/* 업로드한 사람 */}
+            {/* 파일 이름 */}
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">
                 <div className="w-[24px] h-[24px] flex items-center justify-center">
@@ -71,9 +86,9 @@ const FileInfoDrawer = () => {
                 </div>
                 <span className="font-medium">파일 이름</span>
               </div>
-              <span className="font-normal">guamtrip.png</span>
+              <span className="font-normal">{fileInfo.fileName}</span>
             </div>
-            {/* 업로드한 사람 */}
+            {/* 파일 크기 */}
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">
                 <div className="w-[24px] h-[24px] flex items-center justify-center">
@@ -86,7 +101,9 @@ const FileInfoDrawer = () => {
                 </div>
                 <span className="font-medium">파일 크기</span>
               </div>
-              <span className="font-normal">3.2MB</span>
+              <span className="font-normal">
+                {formatFileSize(fileInfo.fileSize)}
+              </span>
             </div>
           </div>
         </div>

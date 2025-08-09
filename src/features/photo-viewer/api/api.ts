@@ -4,6 +4,7 @@ import {
   useInfiniteQuery,
   useMutation,
   useQueryClient,
+  UseInfiniteQueryOptions,
 } from "@tanstack/react-query";
 import { usePhotoViewerStore } from "../model/store";
 
@@ -38,7 +39,11 @@ export const getPhotos = async ({
 };
 
 // 무한 스크롤을 위한 훅
-export const useInfinitePhotos = (qrToken: string, userIdx: number) => {
+export const useInfinitePhotos = (
+  qrToken: string,
+  userIdx: number,
+  options?: Partial<UseInfiniteQueryOptions<GalleryResponse>>
+) => {
   const { onlyMyFiles, fileType, sortBy, bookmarked, sortOrder } =
     usePhotoViewerStore();
 
@@ -64,15 +69,20 @@ export const useInfinitePhotos = (qrToken: string, userIdx: number) => {
         sortBy,
         bookmarked,
         sortOrder,
-        page: pageParam,
+        page: pageParam as number,
         limit: 10,
       }),
-    getNextPageParam: (lastPage, allPages) => {
+    getNextPageParam: (
+      lastPage: GalleryResponse,
+      allPages: GalleryResponse[]
+    ) => {
       const currentPage = allPages.length;
       const totalPages = Math.ceil(lastPage.fileTotalCount / 10);
       return currentPage < totalPages ? currentPage + 1 : undefined;
     },
     initialPageParam: 1,
+    enabled: qrToken !== "" && userIdx !== undefined,
+    ...options,
   });
 };
 
@@ -123,4 +133,16 @@ export const useBookmarkMutation = () => {
       });
     },
   });
+};
+
+export const getFileInfo = async ({
+  eventIdx,
+  fileIdx,
+}: {
+  eventIdx: number;
+  fileIdx: number;
+}) => {
+  return httpClient
+    .get(`/v1/events/${eventIdx}/gallery/file/${fileIdx}`)
+    .then((res) => (res.data as any).data);
 };

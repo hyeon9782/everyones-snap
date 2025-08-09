@@ -3,51 +3,32 @@
 import PhotoGalleryGrid from "@/widgets/photo-gallery-grid";
 import { Button } from "@/shared/ui/button";
 import Image from "next/image";
-import { getPhotos, useInfinitePhotos } from "@/features/photo-viewer/api/api";
+import { useInfinitePhotos } from "@/features/photo-viewer/api/api";
 import UploadDrawer from "@/features/photo-upload/ui/upload-drawer";
 import Link from "next/link";
 import GalleryToolbar from "@/features/photo-viewer/ui/gallery-toolbar";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { getCookie } from "@/shared/lib/cookie-utils";
-import { GalleryResponse } from "@/features/photo-viewer/model/types";
 import { usePhotoViewerStore } from "@/features/photo-viewer/model/store";
 
 const GalleryPage = ({ params }: { params: Promise<{ qrToken: string }> }) => {
   const [qrToken, setQrToken] = useState<string>("");
   const [userIdx, setUserIdx] = useState<number>(0);
-  const [initialData, setInitialData] = useState<GalleryResponse | null>(null);
-  const [isClient, setIsClient] = useState(false);
+  const [isParamsLoaded, setIsParamsLoaded] = useState(false);
   const { initializeBookmarks } = usePhotoViewerStore();
 
-  // 서버 사이드에서 초기 데이터 가져오기
+  // 클라이언트에서 파라미터 초기화
   useEffect(() => {
-    const initializeData = async () => {
+    const initializeParams = async () => {
       const { qrToken: token } = await params;
       const storedUserIdx = getCookie("userIdx");
 
       setQrToken(token);
       setUserIdx(storedUserIdx ? Number(storedUserIdx) : 0);
-      setIsClient(true);
-
-      // 초기 데이터 가져오기
-      try {
-        const response = await getPhotos({
-          qrToken: token,
-          userIdx: storedUserIdx ? Number(storedUserIdx) : 0,
-          guestIdx: 0,
-          onlyMyFiles: "n",
-          fileType: "all",
-          sortBy: "createDt",
-          bookmarked: "n",
-          sortOrder: "DESC",
-        });
-        setInitialData(response);
-      } catch (error) {
-        console.error("Failed to fetch initial data:", error);
-      }
+      setIsParamsLoaded(true);
     };
 
-    initializeData();
+    initializeParams();
   }, [params]);
 
   // 무한 쿼리 사용
@@ -62,14 +43,14 @@ const GalleryPage = ({ params }: { params: Promise<{ qrToken: string }> }) => {
 
   // 모든 페이지의 사진들을 하나의 배열로 합치기
   const allPhotos =
-    data?.pages.flatMap((page) => page.files) || initialData?.files || [];
-  const eventData = data?.pages[0]?.event || initialData?.event;
+    (data as any)?.pages?.flatMap((page: any) => page.files) || [];
+  const eventData = (data as any)?.pages?.[0]?.event;
 
   // 북마크된 사진들의 fileIdx만 메모이제이션
   const bookmarkedFileIds = useMemo(() => {
     return allPhotos
-      .filter((photo) => photo.isBookmarked)
-      .map((photo) => photo.fileIdx)
+      .filter((photo: any) => photo.isBookmarked)
+      .map((photo: any) => photo.fileIdx)
       .join(","); // 문자열로 변환하여 비교 가능하게 만듦
   }, [allPhotos]);
 
@@ -101,7 +82,7 @@ const GalleryPage = ({ params }: { params: Promise<{ qrToken: string }> }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  if (!isClient || isLoading) {
+  if (!isParamsLoaded || isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">

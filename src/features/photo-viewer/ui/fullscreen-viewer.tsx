@@ -224,8 +224,16 @@ const FullscreenViewer = ({
               <DownloadButtonWithToast
                 eventIdx={photos[currentOriginalIndex].eventIdx}
                 fileIdxs={[photos[currentOriginalIndex].fileIdx]}
+                fileName={`photo_${photos[currentOriginalIndex].fileIdx}.${
+                  photos[currentOriginalIndex].mediaType === "video"
+                    ? "mp4"
+                    : "jpg"
+                }`}
               />
-              <FileMorePopup />
+              <FileMorePopup
+                eventIdx={photos[currentOriginalIndex].eventIdx}
+                fileIdx={photos[currentOriginalIndex].fileIdx}
+              />
             </div>
           </motion.div>
         </motion.div>
