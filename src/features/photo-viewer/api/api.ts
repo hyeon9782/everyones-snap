@@ -1,6 +1,10 @@
 import { httpClient } from "@/shared/api/base-client";
 import { GalleryResponse } from "../model/types";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { usePhotoViewerStore } from "../model/store";
 
 export const getPhotos = async ({
@@ -69,5 +73,54 @@ export const useInfinitePhotos = (qrToken: string, userIdx: number) => {
       return currentPage < totalPages ? currentPage + 1 : undefined;
     },
     initialPageParam: 1,
+  });
+};
+
+export const bookmarkPhoto = async ({
+  eventIdx,
+  fileIdx,
+  userIdx,
+}: {
+  eventIdx: number;
+  fileIdx: number;
+  userIdx: number;
+}) => {
+  return httpClient.post(`/v1/events/${eventIdx}/gallery/bookmark`, {
+    eventIdx,
+    fileIdx,
+    userIdx,
+  });
+};
+
+// 북마크 토글 mutation 훅
+export const useBookmarkMutation = () => {
+  const queryClient = useQueryClient();
+  const { toggleBookmark, setPhotoBookmarkStatus } = usePhotoViewerStore();
+
+  return useMutation({
+    mutationFn: bookmarkPhoto,
+    onMutate: async ({ fileIdx }) => {
+      // 현재 북마크 상태를 저장 (롤백용)
+      const { bookmarkedPhotos } = usePhotoViewerStore.getState();
+      const previousIsBookmarked = bookmarkedPhotos.has(fileIdx);
+
+      // 낙관적 업데이트 - 즉시 UI 상태 변경
+      toggleBookmark(fileIdx);
+
+      return { fileIdx, previousIsBookmarked };
+    },
+    onError: (error, variables, context) => {
+      // 에러 발생 시 이전 상태로 롤백
+      if (context) {
+        setPhotoBookmarkStatus(context.fileIdx, context.previousIsBookmarked);
+      }
+      console.error("북마크 토글 실패:", error);
+    },
+    onSuccess: (data, variables) => {
+      // 성공 시 쿼리 무효화
+      queryClient.invalidateQueries({
+        queryKey: ["photos"],
+      });
+    },
   });
 };

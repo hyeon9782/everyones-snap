@@ -12,4 +12,5 @@ export type Photo = {
   deleteYn: "n" | "y";
   createDt: string;
   updateDt: string | null;
+  isBookmarked?: boolean; // 북마크 상태
 };

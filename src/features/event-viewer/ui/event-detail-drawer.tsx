@@ -11,6 +11,8 @@ import { Progress } from "@/shared/ui/progress";
 import { X } from "lucide-react";
 import { Event } from "@/entities/event/model/event.types";
 import dayjs from "dayjs";
+import { bytesToGB, formatFileSize } from "@/shared/lib/file-utils";
+import { DualProgress } from "@/shared/ui/dual-progress";
 
 type Props = {
   isOpen: boolean;
@@ -30,7 +32,9 @@ const EventDetailDrawer = ({ event, isOpen, close }: Props) => {
     <Drawer open={isOpen} onOpenChange={close}>
       <DrawerContent>
         <DrawerHeader>
-          <DrawerTitle>이벤트 상세 정보</DrawerTitle>
+          <DrawerTitle className="text-[18px] font-semibold">
+            이벤트 상세 정보
+          </DrawerTitle>
           <DrawerClose asChild className="absolute right-3 top-8">
             <Button variant="ghost" size="icon" className="w-[36px] h-[36px]">
               <X
@@ -41,7 +45,7 @@ const EventDetailDrawer = ({ event, isOpen, close }: Props) => {
           </DrawerClose>
         </DrawerHeader>
         <div className="flex flex-col gap-3 items-center p-5">
-          <div className="px-5 py-4 bg-[#F2F2F7] flex items-center gap-3 rounded-[20px]">
+          <div className="px-5 py-4 bg-[#F2F2F7] flex items-center gap-3 rounded-[20px] w-full">
             <div className="bg-white rounded-[8px] px-3 py-1 text-[16px] font-medium">
               {eventCategoryMap[event.eventCategoryIdx]}
             </div>
@@ -80,7 +84,8 @@ const EventDetailDrawer = ({ event, isOpen, close }: Props) => {
                 </span>
               </div>
               <div className="text-[16px] font-normal">
-                {dayjs(event.uploadAvailableFrom).format("YYYY.MM.DD")} 까지
+                {dayjs(event.uploadAvailableFrom).format("YY.MM.DD")}~
+                {dayjs(event.uploadAvailableUntil).format("MM.DD")}
               </div>
             </div>
             <div className="flex justify-between items-center w-full">
@@ -98,7 +103,8 @@ const EventDetailDrawer = ({ event, isOpen, close }: Props) => {
                 </span>
               </div>
               <div className="text-[16px] font-normal">
-                {dayjs(event.uploadAvailableUntil).format("YYYY.MM.DD")} 까지
+                {dayjs(event.downloadAvailableUntil).format("YY.MM.DD")}~
+                {dayjs(event.downloadAvailableUntil).format("MM.DD")}
               </div>
             </div>
           </div>
@@ -116,7 +122,9 @@ const EventDetailDrawer = ({ event, isOpen, close }: Props) => {
                 </div>
                 <span className="text-[16px] font-medium">참여 게스트 수</span>
               </div>
-              <div className="text-[16px] font-normal">10 / 1000명</div>
+              <div className="text-[16px] font-normal">
+                {event.eventStat.guestCount} / 1000명
+              </div>
             </div>
             <div className="flex justify-between items-center w-full">
               <div className="flex items-center gap-2">
@@ -130,7 +138,9 @@ const EventDetailDrawer = ({ event, isOpen, close }: Props) => {
                 </div>
                 <span className="text-[16px] font-medium">사진</span>
               </div>
-              <div className="text-[16px] font-normal">94 / 100개</div>
+              <div className="text-[16px] font-normal">
+                {event.eventStat.photoCount} / 100개
+              </div>
             </div>
             <div className="flex justify-between items-center w-full">
               <div className="flex items-center gap-2">
@@ -144,7 +154,9 @@ const EventDetailDrawer = ({ event, isOpen, close }: Props) => {
                 </div>
                 <span className="text-[16px] font-medium">영상</span>
               </div>
-              <div className="text-[16px] font-normal">4 / 10개</div>
+              <div className="text-[16px] font-normal">
+                {event.eventStat.videoCount} / 10개
+              </div>
             </div>
             <div className="flex justify-between items-center w-full">
               <div className="flex items-center gap-2">
@@ -175,14 +187,20 @@ const EventDetailDrawer = ({ event, isOpen, close }: Props) => {
                 </div>
                 <span className="text-[16px] font-medium">용량</span>
               </div>
-              <div className="text-[16px] font-normal">1GB / 10GB</div>
+              <div className="text-[16px] font-normal">
+                {bytesToGB(
+                  event.eventStat.photoStorage + event.eventStat.videoStorage
+                )}
+                GB / 10GB
+              </div>
             </div>
             <div className="w-full">
-              <Progress value={50} className="h-[20px]" />
-            </div>
-            <div className="flex justify-end gap-[10px] w-full">
-              <div className="flex gap-1">사진</div>
-              <div className="flex gap-1">영상</div>
+              <DualProgress
+                value1={40}
+                value2={10}
+                max={100}
+                className="h-[20px]"
+              />
             </div>
           </div>
         </div>

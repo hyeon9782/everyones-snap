@@ -7,15 +7,17 @@ import { getPhotos, useInfinitePhotos } from "@/features/photo-viewer/api/api";
 import UploadDrawer from "@/features/photo-upload/ui/upload-drawer";
 import Link from "next/link";
 import GalleryToolbar from "@/features/photo-viewer/ui/gallery-toolbar";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { getCookie } from "@/shared/lib/cookie-utils";
 import { GalleryResponse } from "@/features/photo-viewer/model/types";
+import { usePhotoViewerStore } from "@/features/photo-viewer/model/store";
 
 const GalleryPage = ({ params }: { params: Promise<{ qrToken: string }> }) => {
   const [qrToken, setQrToken] = useState<string>("");
   const [userIdx, setUserIdx] = useState<number>(0);
   const [initialData, setInitialData] = useState<GalleryResponse | null>(null);
   const [isClient, setIsClient] = useState(false);
+  const { initializeBookmarks } = usePhotoViewerStore();
 
   // 서버 사이드에서 초기 데이터 가져오기
   useEffect(() => {
@@ -62,6 +64,21 @@ const GalleryPage = ({ params }: { params: Promise<{ qrToken: string }> }) => {
   const allPhotos =
     data?.pages.flatMap((page) => page.files) || initialData?.files || [];
   const eventData = data?.pages[0]?.event || initialData?.event;
+
+  // 북마크된 사진들의 fileIdx만 메모이제이션
+  const bookmarkedFileIds = useMemo(() => {
+    return allPhotos
+      .filter((photo) => photo.isBookmarked)
+      .map((photo) => photo.fileIdx)
+      .join(","); // 문자열로 변환하여 비교 가능하게 만듦
+  }, [allPhotos]);
+
+  // 북마크된 사진 ID가 변경될 때만 초기화
+  useEffect(() => {
+    if (allPhotos.length > 0) {
+      initializeBookmarks(allPhotos);
+    }
+  }, [bookmarkedFileIds, initializeBookmarks]);
 
   // 스크롤 이벤트 핸들러 (useCallback으로 최적화)
   const handleScroll = useCallback(() => {

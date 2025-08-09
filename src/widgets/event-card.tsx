@@ -64,7 +64,9 @@ const EventCard = ({ isHost, event }: Props) => {
                 width={14}
                 height={14}
               />
-              <span className="text-[16px] font-medium">24</span>
+              <span className="text-[16px] font-medium">
+                {event.eventStat.guestCount}
+              </span>
             </div>
             <div className="flex gap-1 items-center">
               <Image
@@ -73,7 +75,9 @@ const EventCard = ({ isHost, event }: Props) => {
                 width={16.67}
                 height={16.67}
               />
-              <span className="text-[16px] font-medium">172</span>
+              <span className="text-[16px] font-medium">
+                {event.eventStat.photoCount}
+              </span>
             </div>
             <div className="flex gap-1 items-center">
               <Image
@@ -82,7 +86,9 @@ const EventCard = ({ isHost, event }: Props) => {
                 width={16.67}
                 height={16.67}
               />
-              <span className="text-[16px] font-medium">20</span>
+              <span className="text-[16px] font-medium">
+                {event.eventStat.videoCount}
+              </span>
             </div>
             <div className="flex gap-1 items-center">
               <Image
@@ -91,7 +97,7 @@ const EventCard = ({ isHost, event }: Props) => {
                 width={17.5}
                 height={16.28}
               />
-              <span className="text-[16px] font-medium">24</span>
+              <span className="text-[16px] font-medium"></span>
             </div>
           </div>
         )}

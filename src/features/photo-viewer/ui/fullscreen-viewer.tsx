@@ -11,6 +11,9 @@ import {
   CarouselPrevious,
 } from "@/shared/ui/carousel";
 import { useState, useEffect, useMemo } from "react";
+import BookmarkButton from "./bookmark-button";
+import DownloadButton from "@/features/photo-download/ui/download-button";
+import FileMorePopup from "./file-more-popup";
 
 interface FullscreenViewerProps {
   photos: Photo[];
@@ -90,6 +93,8 @@ const FullscreenViewer = ({
 
   if (photos.length === 0) return null;
 
+  console.log("photos", photos);
+
   const currentOriginalIndex = getOriginalIndex(current);
 
   return (
@@ -100,7 +105,7 @@ const FullscreenViewer = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
+          className="fixed inset-0 z-50 bg-black flex items-center justify-center"
           onClick={onClose}
         >
           <motion.div
@@ -207,8 +212,17 @@ const FullscreenViewer = ({
               ✕
             </button>
 
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-              {currentOriginalIndex + 1} / {photos.length}
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+              {currentOriginalIndex + 1} of {photos.length}
+            </div>
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-5">
+              <BookmarkButton
+                eventIdx={photos[currentOriginalIndex].eventIdx}
+                fileIdx={photos[currentOriginalIndex].fileIdx}
+                userIdx={photos[currentOriginalIndex].userIdx}
+              />
+              <DownloadButton />
+              <FileMorePopup />
             </div>
           </motion.div>
         </motion.div>

@@ -29,7 +29,7 @@ const EventMorePopup = ({ eventId, event }: Props) => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="bg-[#F2F2F7] text-black text-[16px] font-semibold h-[48px]">
+          <Button className="bg-[#F2F2F7] text-black text-[16px] font-semibold h-[48px] w-[48px]">
             <Image src="/images/more.svg" alt="more" width={16} height={16} />
           </Button>
         </DropdownMenuTrigger>

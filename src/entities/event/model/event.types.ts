@@ -10,8 +10,8 @@ export type Event = {
   uploadAvailableUntil: string;
   downloadAvailableFrom: string;
   downloadAvailableUntil: string;
-  isEventDtUpdate: string;
-  isGalleryPublic: string;
+  isEventDtUpdate: "n" | "y";
+  isGalleryPublic: "y" | "n";
   mainImageUrl: string;
   planIdx: number | null;
   qrToken: string;
@@ -19,4 +19,19 @@ export type Event = {
   qrImageUrl: string;
   createDt: string;
   updateDt: string | null;
+  eventStat: {
+    eventStatIdx: number;
+    eventIdx: number;
+    guestCount: number;
+    photoCount: number;
+    videoCount: number;
+    photoStorage: number;
+    videoStorage: number;
+    createDt: string;
+    updateDt: string | null;
+  };
+  eventCategory: {
+    eventCategoryIdx: number;
+    eventCategoryName: string;
+  };
 };

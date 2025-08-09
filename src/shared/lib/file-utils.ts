@@ -107,3 +107,18 @@ export const formatFileSize = (bytes: number): string => {
 
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 };
+
+export function bytesToGB(
+  bytes: number,
+  decimals: number = 2,
+  binary: boolean = true
+): number {
+  if (bytes === 0) return 0;
+
+  const divisor = binary ? 1024 : 1000;
+  const gbInBytes = Math.pow(divisor, 3); // 1024³ 또는 1000³
+
+  const gb = bytes / gbInBytes;
+
+  return Number(gb.toFixed(decimals));
+}

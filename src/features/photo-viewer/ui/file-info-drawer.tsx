@@ -13,11 +13,7 @@ import Image from "next/image";
 const FileInfoDrawer = () => {
   return (
     <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="ghost" size="icon" className="w-[36px] h-[36px]">
-          파일 정보
-        </Button>
-      </DrawerTrigger>
+      <DrawerTrigger>파일 정보</DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>파일 정보</DrawerTitle>
