@@ -3,14 +3,23 @@
 /**
  * 단일 파일 다운로드
  */
-export const downloadFile = (url: string, filename: string) => {
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.target = "_blank";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+export const downloadFile = (url: string, filename: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    try {
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.target = "_blank";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      // 약간의 지연 후 완료로 처리
+      setTimeout(resolve, 100);
+    } catch (error) {
+      reject(error);
+    }
+  });
 };
 
 /**

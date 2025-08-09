@@ -12,7 +12,7 @@ import {
 } from "@/shared/ui/carousel";
 import { useState, useEffect, useMemo } from "react";
 import BookmarkButton from "./bookmark-button";
-import DownloadButton from "@/features/photo-download/ui/download-button";
+import DownloadButtonWithToast from "@/features/photo-download/ui/download-button-with-toast";
 import FileMorePopup from "./file-more-popup";
 
 interface FullscreenViewerProps {
@@ -221,7 +221,10 @@ const FullscreenViewer = ({
                 fileIdx={photos[currentOriginalIndex].fileIdx}
                 userIdx={photos[currentOriginalIndex].userIdx}
               />
-              <DownloadButton />
+              <DownloadButtonWithToast
+                eventIdx={photos[currentOriginalIndex].eventIdx}
+                fileIdxs={[photos[currentOriginalIndex].fileIdx]}
+              />
               <FileMorePopup />
             </div>
           </motion.div>
