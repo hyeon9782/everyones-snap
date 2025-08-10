@@ -6,6 +6,7 @@ import Header from "@/widgets/header";
 import Footer from "@/widgets/footer";
 import { QueryProvider } from "@/shared/ui/query-provider";
 import { AuthProvider } from "@/shared/ui/auth-provider";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Script
+          src="https://pay.nicepay.co.kr/v1/js/"
+          strategy="beforeInteractive"
+        />
         <QueryProvider>
           <AuthProvider>
             <DefaultLayout>

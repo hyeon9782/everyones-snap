@@ -1,11 +1,42 @@
 "use client";
 
+import { useUserStore } from "@/features/login/model/store";
+import { usePayment } from "@/features/payment/model/hooks";
+import { usePlans } from "@/features/price-viewer";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import React from "react";
 
 const PaymentPage = () => {
+  const searchParams = useSearchParams();
+  const planIdx = searchParams.get("planIdx");
+  const { data: plans } = usePlans();
+
+  const { user } = useUserStore();
+
+  const plan = plans?.find((plan) => plan.planIdx === Number(planIdx));
+
+  console.log("plan", plan);
+
+  const {
+    processPayment,
+    isLoading: isPaymentLoading,
+    error: paymentError,
+    currentStep,
+    reset,
+  } = usePayment();
+
+  const handlePayment = () => {
+    processPayment({
+      planIdx: plan?.planIdx ?? 0,
+      productName: plan?.name ?? "",
+      amount: plan?.price ?? 0,
+      userIdx: user?.userIdx,
+    });
+  };
+
   return (
     <div className="bg-[#F1F5F9] h-screen flex flex-col gap-10 px-4 py-10">
       <div className="flex flex-col gap-4">
@@ -29,7 +60,7 @@ const PaymentPage = () => {
                 모두의스냅 이용권
               </span>
               <span className="text-[18px] text-[#344054] font-semibold">
-                베이직
+                {plan?.name}
               </span>
             </div>
           </div>
@@ -57,7 +88,7 @@ const PaymentPage = () => {
               총 결제 금액
             </span>
             <span className="text-[#344054] font-semibold text-[18px]">
-              19,900원
+              {plan?.price.toLocaleString()}원
             </span>
           </div>
         </div>
@@ -88,7 +119,10 @@ const PaymentPage = () => {
           </label>
         </div>
       </div>
-      <Button className="w-full rounded-xl h-[53px] bg-[#359EFF] flex items-center justify-center text-white font-semibold text-[20px]">
+      <Button
+        className="w-full rounded-xl h-[53px] bg-[#359EFF] flex items-center justify-center text-white font-semibold text-[20px]"
+        onClick={handlePayment}
+      >
         결제하기
       </Button>
     </div>

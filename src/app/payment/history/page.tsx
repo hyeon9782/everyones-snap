@@ -1,12 +1,25 @@
-import PaymentHistoryCard from "@/features/payment-viewer/ui/payment-history-card";
-import Link from "next/link";
+"use client";
 
-const PaymentHistoryPage = async ({
-  searchParams,
-}: {
-  searchParams: { type: string };
-}) => {
-  const type = searchParams?.type || "all";
+import { useUserStore } from "@/features/login/model/store";
+import { getOrders } from "@/features/payment-viewer/api/api";
+import PaymentHistoryCard from "@/features/payment-viewer/ui/payment-history-card";
+import { useApiQuery } from "@/shared/lib";
+import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+
+const PaymentHistoryPage = () => {
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type") || "all";
+  const { user } = useUserStore();
+
+  const { data: orders } = useQuery({
+    queryKey: ["orders"],
+    queryFn: () => getOrders(user?.userIdx ?? 0),
+    enabled: !!user?.userIdx,
+  });
+
+  console.log("orders", orders);
 
   return (
     <div className="bg-[#F1F5F9] h-screen flex flex-col gap-5 px-4 py-10">

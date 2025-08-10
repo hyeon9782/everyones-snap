@@ -4,10 +4,18 @@ import Image from "next/image";
 import { Calendar, Download, Folder, Upload } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { cn } from "@/shared/lib/utils";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/features/login/model/store";
 
 const PriceCard = ({ plan }: { plan: Plan }) => {
+  const { user } = useUserStore();
+  const router = useRouter();
   const handleBuy = () => {
-    console.log("buy");
+    if (user) {
+      router.push(`/payment?planIdx=${plan.planIdx}`);
+    } else {
+      router.push("/login");
+    }
   };
   return (
     <div className="bg-white rounded-lg px-6 pt-10 pb-5 flex flex-col gap-[28px]">

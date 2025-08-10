@@ -1,4 +1,11 @@
 import { httpClient } from "@/shared/api/base-client";
+import { CreateOrderRequest } from "../model/types";
+
+export const createOrder = async (createOrderRequest: CreateOrderRequest) => {
+  return httpClient
+    .post("/v1/orders", createOrderRequest)
+    .then((res) => (res.data as any).data);
+};
 
 export const preparePayment = async ({
   orderId,
