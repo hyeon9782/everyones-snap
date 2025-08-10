@@ -5,11 +5,16 @@ import BackgroundSelector from "./background-selector";
 import { Textarea } from "@/shared/ui/textarea";
 import BasicSelect from "@/shared/ui/basic-select";
 
-const GuestbookForm = () => {
-  const [background, setBackground] = useState<string>(
-    "from-[#FDD7DE] to-[#C8E1FD]"
-  );
-  const [font, setFont] = useState<string>("나눔명조");
+const GuestbookForm = ({
+  initialBackground = "from-[#FDD7DE] to-[#C8E1FD]",
+  initialFont = "나눔명조",
+}: {
+  initialBackground?: string;
+  initialFont?: string;
+}) => {
+  const [background, setBackground] = useState<string>(initialBackground);
+  const [font, setFont] = useState<string>(initialFont);
+
   return (
     <div className="flex flex-col gap-5">
       <Textarea
@@ -34,7 +39,7 @@ const GuestbookForm = () => {
             },
           ]}
           className="w-fit max-h-[24px]"
-          initialValue="나눔명조"
+          value={font}
           onChange={(value) => setFont(value)}
           placeholder="폰트를 선택해주세요."
         />

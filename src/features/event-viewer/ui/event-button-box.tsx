@@ -40,7 +40,7 @@ const EventButtonBox = ({ isHost, event }: Props) => {
         <div className="flex gap-3">
           <Link
             href={`/gallery/${event.qrToken}?eventIdx=${event.eventIdx}`}
-            className="flex-1 flex gap-2 px-4 items-center justify-center rounded-lg bg-[#F2F2F7] text-black text-[16px] font-semibold h-[48px]"
+            className="flex-1 flex gap-2 px-4 items-center justify-center rounded-lg bg-[#F2F2F7] text-black  h-[48px] whitespace-nowrap"
           >
             <Image
               src="/images/gallery.svg"
@@ -48,17 +48,20 @@ const EventButtonBox = ({ isHost, event }: Props) => {
               width={18}
               height={18}
             />
-            갤러리 보기
+            <span className="text-[16px] font-medium">갤러리 보기</span>
           </Link>
-          <Button className="flex-1 bg-[#F2F2F7] text-black text-[16px] font-semibold h-[48px]">
+          <Link
+            href={`/guestbook/${event.eventIdx}`}
+            className="flex-1 flex gap-2 px-4 items-center justify-center rounded-lg bg-[#F2F2F7] text-black  h-[48px] whitespace-nowrap"
+          >
             <Image
               src="/images/checkbook.svg"
               alt="checkbook"
               width={21.02}
               height={16}
             />
-            메시지 남기기
-          </Button>
+            <span className="text-[16px] font-medium">메시지 남기기</span>
+          </Link>
         </div>
       )}
     </div>
