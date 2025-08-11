@@ -1,5 +1,5 @@
 import { httpClient } from "@/shared/api/base-client";
-
+import { Event } from "@/features/event-viewer/model/types";
 export type CreateEvent = {
   eventTitle: string;
   eventCategoryIdx: number;
@@ -31,5 +31,7 @@ export const deleteEvent = async (eventIdx: number) => {
 };
 
 export const getEventList = async (userIdx: number) => {
-  return httpClient.get(`/v1/users/${userIdx}/events`);
+  return httpClient
+    .get(`/v1/users/${userIdx}/events`)
+    .then((res) => (res.data as any).data.events as Event[]);
 };

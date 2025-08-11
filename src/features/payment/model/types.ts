@@ -47,7 +47,7 @@ export interface PaymentPrepareResponse {
   cardName: string;
   cardNumber: string;
   paidAt: string;
-  paymentIdx: number;
+  _paymentIdx: number;
   createDt: string;
   updateDt: string;
 }

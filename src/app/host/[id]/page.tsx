@@ -23,17 +23,15 @@ const HostPage = async ({ params }: { params: Promise<{ id: string }> }) => {
     console.log("No accessToken found in cookies");
   }
 
-  const { data: eventList } = await getEventList(Number(id)).then(
-    (res) => res.data
-  );
+  const events = await getEventList(Number(id));
 
-  console.log("eventList", eventList);
+  console.log("eventList", events);
 
   return (
     <div className="bg-[#F2F2F7] flex flex-col gap-5">
       <EventFilterBox />
       <div className="px-4 pb-[90px]">
-        {eventList?.map((event) => (
+        {events?.map((event) => (
           <EventCard isHost={true} key={event.eventIdx} event={event} />
         ))}
       </div>
