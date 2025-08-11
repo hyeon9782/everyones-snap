@@ -7,11 +7,10 @@ import {
 } from "@/shared/ui/drawer";
 import { Button } from "@/shared/ui/button";
 import Image from "next/image";
-import { Progress } from "@/shared/ui/progress";
 import { X } from "lucide-react";
-import { Event } from "@/entities/event/model/event.types";
+import { Event } from "@/features/event-viewer/model/types";
 import dayjs from "dayjs";
-import { bytesToGB, formatFileSize } from "@/shared/lib/file-utils";
+import { bytesToGB } from "@/shared/lib/file-utils";
 import { DualProgress } from "@/shared/ui/dual-progress";
 
 type Props = {

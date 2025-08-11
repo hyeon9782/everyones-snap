@@ -77,7 +77,7 @@ const FailPage = () => {
       </div>
       <div className="flex flex-col gap-5">
         <Link
-          href="/event"
+          href="/price"
           className="w-full rounded-xl h-[53px] bg-[#359EFF] flex items-center justify-center text-white font-semibold text-[20px]"
         >
           확인

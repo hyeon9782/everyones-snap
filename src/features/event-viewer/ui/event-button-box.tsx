@@ -1,7 +1,6 @@
-import { Button } from "@/shared/ui/button";
 import EventMorePopup from "./event-more-popup";
 import EventShareDrawer from "./event-share-drawer";
-import { Event } from "@/entities/event/model/event.types";
+import { Event } from "@/features/event-viewer/model/types";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";

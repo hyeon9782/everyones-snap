@@ -22,7 +22,7 @@ const PaymentHistoryPage = () => {
   console.log("orders", orders);
 
   return (
-    <div className="bg-[#F1F5F9] h-screen flex flex-col gap-5 px-4 py-10">
+    <div className="bg-[#F1F5F9] min-h-screen flex flex-col gap-5 px-4 py-10">
       <div className="flex justify-between items-center">
         <h1 className="text-[20px] font-semibold text-[#344054]">결제 내역</h1>
         <div className="flex items-center gap-2 bg-white rounded-full p-0.5">
@@ -59,7 +59,9 @@ const PaymentHistoryPage = () => {
         </div>
       </div>
       <div className="flex flex-col gap-4">
-        <PaymentHistoryCard />
+        {orders?.map((order) => (
+          <PaymentHistoryCard key={order.orderIdx} order={order} />
+        ))}
       </div>
     </div>
   );

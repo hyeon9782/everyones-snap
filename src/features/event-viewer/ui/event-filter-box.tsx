@@ -1,12 +1,8 @@
-"use client";
-import BasicSelect from "@/shared/ui/basic-select";
-import React from "react";
-
 const EventFilterBox = () => {
   return (
     <div className="flex justify-between items-center px-4 pt-10 w-full">
       <span className="text-[20px] font-semibold">나의 이벤트</span>
-      <div className="flex gap-2">
+      {/* <div className="flex gap-2">
         <BasicSelect
           items={[
             { label: "최신순", value: "latest" },
@@ -17,7 +13,7 @@ const EventFilterBox = () => {
           onChange={() => {}}
           placeholder="이벤트 정렬"
         />
-      </div>
+      </div> */}
     </div>
   );
 };

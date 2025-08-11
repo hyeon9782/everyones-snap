@@ -11,18 +11,20 @@ interface BookmarkButtonProps {
   eventIdx: number;
   fileIdx: number;
   userIdx: number;
+  initialBookmarked: boolean;
 }
 
 const BookmarkButton = ({
   eventIdx,
   fileIdx,
   userIdx,
+  initialBookmarked,
 }: BookmarkButtonProps) => {
   const { bookmarkedPhotos } = usePhotoViewerStore();
   const bookmarkMutation = useBookmarkMutation();
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  const isBookmarked = bookmarkedPhotos.has(fileIdx);
+  const isBookmarked = initialBookmarked || bookmarkedPhotos.has(fileIdx);
 
   // 컴포넌트 언마운트 시 타이머 정리
   useEffect(() => {

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { httpClient } from "@/shared/api/base-client";
 import EventFilterBox from "@/features/event-viewer/ui/event-filter-box";
+import { CircleAlert } from "lucide-react";
 
 const HostPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
@@ -25,15 +26,26 @@ const HostPage = async ({ params }: { params: Promise<{ id: string }> }) => {
 
   const events = await getEventList(Number(id));
 
+  // const events = [];
+
   console.log("eventList", events);
 
   return (
     <div className="bg-[#F2F2F7] flex flex-col gap-5">
       <EventFilterBox />
       <div className="px-4 pb-[90px]">
-        {events?.map((event) => (
-          <EventCard isHost={true} key={event.eventIdx} event={event} />
-        ))}
+        {events.length === 0 ? (
+          <div className="flex items-center h-[364px] gap-2 justify-center">
+            <CircleAlert className="size-5 text-[#C7C7CC]" />
+            <span className="text-[16px] font-semibold text-[#C7C7CC]">
+              아직 생성된 이벤트가 없어요.
+            </span>
+          </div>
+        ) : (
+          events?.map((event) => (
+            <EventCard isHost={true} key={event.eventIdx} event={event} />
+          ))
+        )}
       </div>
       <div className="fixed bottom-0 w-full bg-white h-[90px] flex justify-center items-center px-5">
         <Link

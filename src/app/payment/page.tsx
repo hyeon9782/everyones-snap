@@ -7,12 +7,14 @@ import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
 const PaymentPage = () => {
   const searchParams = useSearchParams();
   const planIdx = searchParams.get("planIdx");
   const { data: plans } = usePlans();
+
+  const [agree, setAgree] = useState(false);
 
   const { user } = useUserStore();
 
@@ -78,6 +80,8 @@ const PaymentPage = () => {
             <Input
               className="w-[170px] border-none shadow-none h-[21px]"
               placeholder="이메일을 입력해주세요."
+              value={user?.email}
+              disabled={true}
             />
           </div>
         </div>
@@ -99,18 +103,30 @@ const PaymentPage = () => {
           </h2>
           <hr />
           <div className="flex gap-2 items-center">
-            <input type="radio" id="kakao" className="w-[20px] h-[20px]" />
+            <input
+              type="radio"
+              id="card"
+              className="w-[20px] h-[20px]"
+              checked={true}
+              disabled={true}
+            />
             <label
-              htmlFor="kakao"
+              htmlFor="card"
               className="text-[18px] font-medium text-[#344054]"
             >
-              카카오페이
+              신용카드
             </label>
           </div>
         </div>
         {/* 약관 동의 */}
         <div className="bg-white rounded-lg p-5 flex gap-2 items-center">
-          <input type="checkbox" id="agree" className="w-[20px] h-[20px]" />
+          <input
+            type="checkbox"
+            id="agree"
+            className="w-[20px] h-[20px]"
+            checked={agree}
+            onChange={(e) => setAgree(e.target.checked)}
+          />
           <label htmlFor="agree" className="flex items-center gap-2">
             <span className="text-[16px] font-bold text-[#344054]">필수</span>
             <span className="text-[16px] font-medium text-[#344054]">
@@ -122,6 +138,7 @@ const PaymentPage = () => {
       <Button
         className="w-full rounded-xl h-[53px] bg-[#359EFF] flex items-center justify-center text-white font-semibold text-[20px]"
         onClick={handlePayment}
+        disabled={!agree}
       >
         결제하기
       </Button>

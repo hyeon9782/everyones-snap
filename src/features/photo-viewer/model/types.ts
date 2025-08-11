@@ -8,8 +8,19 @@ export interface GalleryResponse {
 }
 
 export interface FileInfo {
-  fileName: string;
+  fileIdx: number;
+  eventIdx: number;
+  userIdx: number;
+  guestIdx: number;
+  mediaType: string;
+  type: string;
+  url: string;
+  isThumbnail: string;
   fileSize: number;
-  uploadedBy: string;
-  createdDate: string;
+  fileName: string;
+  targetType: string;
+  deleteYn: string;
+  createDt: string;
+  updateDt: string | null;
+  isBookmarked: boolean;
 }

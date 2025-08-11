@@ -1,5 +1,5 @@
 import EventButtonBox from "@/features/event-viewer/ui/event-button-box";
-import { Event } from "@/entities/event/model/event.types";
+import { Event } from "@/features/event-viewer/model/types";
 import Image from "next/image";
 import dayjs from "dayjs";
 
@@ -97,7 +97,9 @@ const EventCard = ({ isHost, event }: Props) => {
                 width={17.5}
                 height={16.28}
               />
-              <span className="text-[16px] font-medium"></span>
+              <span className="text-[16px] font-medium">
+                {event.eventStat.visitorNoteCount}
+              </span>
             </div>
           </div>
         )}

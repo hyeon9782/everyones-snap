@@ -13,7 +13,7 @@ import {
 } from "@/shared/ui/dropdown-menu";
 import Link from "next/link";
 import EventDetailDrawer from "./event-detail-drawer";
-import { Event } from "@/entities/event/model/event.types";
+import { Event } from "@/features/event-viewer/model/types";
 
 type Props = {
   eventId: number;

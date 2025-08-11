@@ -15,6 +15,8 @@ import {
   DownloadProgressCallback,
 } from "@/shared/lib/file-utils";
 import { useState } from "react";
+import { deletePhoto } from "../api/api";
+import { useUserStore } from "@/features/login/model/store";
 
 const GalleryToolbar = ({ eventIdx }: { eventIdx: number }) => {
   const [isDownloading, setIsDownloading] = useState(false);
@@ -29,9 +31,13 @@ const GalleryToolbar = ({ eventIdx }: { eventIdx: number }) => {
   const bookmarked = usePhotoViewerStore((state) => state.bookmarked);
   const setBookmarked = usePhotoViewerStore((state) => state.setBookmarked);
   const selectedPhotos = usePhotoViewerStore((state) => state.selectedPhotos);
+  const setSelectedPhotos = usePhotoViewerStore(
+    (state) => state.setSelectedPhotos
+  );
 
   const toggleSelect = () => {
     setIsSelecting(!isSelecting);
+    setSelectedPhotos([]);
   };
 
   const handleBookmark = () => {
@@ -80,7 +86,30 @@ const GalleryToolbar = ({ eventIdx }: { eventIdx: number }) => {
     }
   };
 
-  const handleDelete = () => {};
+  const { user } = useUserStore();
+
+  const handleDelete = async () => {
+    const confirm = window.confirm(
+      "사진을 삭제할까요? \n사진을 삭제하면 되돌릴 수 없어요."
+    );
+    if (!confirm) return;
+
+    const response = await deletePhoto({
+      eventIdx,
+      fileIdxList: selectedPhotos.map((photo) => photo.fileIdx),
+      userIdx: user?.userIdx,
+      guestIdx: selectedPhotos[0].guestIdx,
+    });
+
+    console.log("response", response);
+
+    if (response.success) {
+      alert("사진이 삭제되었습니다.");
+      window.location.reload();
+    } else {
+      alert("사진 삭제에 실패했습니다.");
+    }
+  };
 
   return (
     <div className="flex items-center justify-between px-4 pt-5">

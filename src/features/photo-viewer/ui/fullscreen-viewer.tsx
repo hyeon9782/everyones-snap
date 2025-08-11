@@ -220,6 +220,7 @@ const FullscreenViewer = ({
                 eventIdx={photos[currentOriginalIndex].eventIdx}
                 fileIdx={photos[currentOriginalIndex].fileIdx}
                 userIdx={photos[currentOriginalIndex].userIdx}
+                initialBookmarked={photos[currentOriginalIndex].isBookmarked}
               />
               <DownloadButtonWithToast
                 eventIdx={photos[currentOriginalIndex].eventIdx}
