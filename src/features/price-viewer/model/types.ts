@@ -3,6 +3,8 @@ export interface Plan {
   code: string;
   name: string;
   price: number;
+  originalPrice: number;
+  discountRate: number;
   eventLimit: number;
   photoLimit: number;
   videoLimit: number;

@@ -12,7 +12,7 @@ interface PriceListProps {
 
 const PriceList = ({ initialPlans }: PriceListProps) => {
   const queryClient = useQueryClient();
-  
+
   // 서버에서 받은 초기 데이터를 캐시에 설정
   useEffect(() => {
     queryClient.setQueryData(["plans"], initialPlans);
@@ -25,7 +25,10 @@ const PriceList = ({ initialPlans }: PriceListProps) => {
     return (
       <div className="flex flex-col gap-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="bg-white rounded-lg px-6 pt-10 pb-5 h-[400px] animate-pulse">
+          <div
+            key={i}
+            className="bg-white rounded-lg px-6 pt-10 pb-5 h-[400px] animate-pulse"
+          >
             <div className="bg-gray-200 h-8 rounded mb-4"></div>
             <div className="bg-gray-200 h-6 rounded mb-2"></div>
             <div className="bg-gray-200 h-4 rounded"></div>
@@ -48,6 +51,7 @@ const PriceList = ({ initialPlans }: PriceListProps) => {
       {plans?.map((plan) => (
         <PriceCard key={plan.planIdx} plan={plan} />
       ))}
+      <PriceCard />
     </div>
   );
 };

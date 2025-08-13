@@ -6,7 +6,6 @@ import ThirdSection from "@/entities/home/ui/third-section";
 import SixthSection from "@/entities/home/ui/sixth-section";
 import SeventhSection from "@/entities/home/ui/seventh-section";
 import EighthSection from "@/entities/home/ui/eighth-section";
-import NineSection from "@/entities/home/ui/nine-section";
 
 export default function Home() {
   return (
@@ -19,7 +18,6 @@ export default function Home() {
       <SixthSection />
       <SeventhSection />
       <EighthSection />
-      <NineSection />
     </main>
   );
 }
