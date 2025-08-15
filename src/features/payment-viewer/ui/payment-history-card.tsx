@@ -4,25 +4,27 @@ import { Button } from "@/shared/ui/button";
 import React from "react";
 import { Order } from "../model/types";
 import dayjs from "dayjs";
-import { useUserStore } from "@/features/login/model/store";
 import { cancelPayment } from "@/features/payment/api/api";
 
 const PaymentHistoryCard = ({ order }: { order: Order }) => {
-  const { user } = useUserStore();
-
   const handleCancel = async () => {
-    const response = await cancelPayment({
-      tid: order.tid,
-      orderId: order.orderId,
-      amount: order.amount,
-      reason: "취소",
-    });
+    try {
+      const response = await cancelPayment({
+        tid: order.tid,
+        orderId: order.orderId,
+        amount: order.amount,
+        reason: "단순변심",
+      });
 
-    console.log("response", response);
+      console.log("response", response);
 
-    if (response.success) {
-      alert("취소되었습니다.");
-    } else {
+      if (response.success) {
+        alert("취소되었습니다.");
+      } else {
+        alert("취소에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("error", error);
       alert("취소에 실패했습니다.");
     }
   };
@@ -61,7 +63,7 @@ const PaymentHistoryCard = ({ order }: { order: Order }) => {
         <div className="flex justify-between items-center">
           <span className="text-[#667085] font-medium text-[16px]">이메일</span>
           <span className="text-[16px] font-medium text-[#344054]">
-            {user?.email}
+            {order.email}
           </span>
         </div>
         <div className="flex justify-between items-center">
@@ -80,12 +82,12 @@ const PaymentHistoryCard = ({ order }: { order: Order }) => {
             {order.amount.toLocaleString()}원
           </span>
         </div>
-        <div className="flex justify-between items-center">
+        {/* <div className="flex justify-between items-center">
           <span className="text-[#667085] font-medium text-[16px]">
             신한(1002-010-555555)
           </span>
           <span className="text-[16px] font-medium text-[#667085]">일시불</span>
-        </div>
+        </div> */}
       </div>
       <div className="flex gap-3">
         <Button

@@ -71,17 +71,43 @@ export const downloadMultipleFiles = async (
 /**
  * ZIP 파일로 다운로드 (단일 파일인 경우)
  */
-export const downloadAsZip = (
+// export const downloadAsZip = (
+//   url: string,
+//   filename: string = "download.zip"
+// ) => {
+//   const a = document.createElement("a");
+//   a.href = url;
+//   a.download = filename;
+//   a.target = "_blank";
+//   document.body.appendChild(a);
+//   a.click();
+//   document.body.removeChild(a);
+// };
+export const downloadAsZip = async (
   url: string,
   filename: string = "download.zip"
 ) => {
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.target = "_blank";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = downloadUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    // 메모리 정리
+    window.URL.revokeObjectURL(downloadUrl);
+  } catch (error) {
+    console.error("다운로드 실패:", error);
+  }
 };
 
 /**

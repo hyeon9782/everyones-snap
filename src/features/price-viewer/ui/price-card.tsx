@@ -11,7 +11,7 @@ const PriceCard = ({ plan }: { plan?: Plan }) => {
   const { user } = useUserStore();
   const router = useRouter();
   const handleBuy = () => {
-    if (!plan) {
+    if (plan) {
       if (user) {
         router.push(`/payment?planIdx=${plan?.planIdx}`);
       } else {

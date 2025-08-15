@@ -18,17 +18,13 @@ const PaymentPage = () => {
 
   const { user } = useUserStore();
 
+  const [email, setEmail] = useState(user?.email ?? "");
+
   const plan = plans?.find((plan) => plan.planIdx === Number(planIdx));
 
   console.log("plan", plan);
 
-  const {
-    processPayment,
-    isLoading: isPaymentLoading,
-    error: paymentError,
-    currentStep,
-    reset,
-  } = usePayment();
+  const { processPayment, isLoading } = usePayment();
 
   const handlePayment = () => {
     processPayment({
@@ -36,6 +32,7 @@ const PaymentPage = () => {
       productName: plan?.name ?? "",
       amount: plan?.price ?? 0,
       userIdx: user?.userIdx,
+      email,
     });
   };
 
@@ -80,8 +77,8 @@ const PaymentPage = () => {
             <Input
               className="w-[170px] border-none shadow-none h-[21px]"
               placeholder="이메일을 입력해주세요."
-              value={user?.email}
-              disabled={true}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
         </div>
@@ -138,7 +135,7 @@ const PaymentPage = () => {
       <Button
         className="w-full rounded-xl h-[53px] bg-[#359EFF] flex items-center justify-center text-white font-semibold text-[20px]"
         onClick={handlePayment}
-        disabled={!agree}
+        disabled={!agree || !email || isLoading}
       >
         결제하기
       </Button>

@@ -21,6 +21,12 @@ const PaymentHistoryPage = () => {
 
   console.log("orders", orders);
 
+  const successOrders = orders?.filter((order) => order.status === "paid");
+  const cancelOrders = orders?.filter((order) => order.status === "cancel");
+
+  console.log("successOrders", successOrders);
+  console.log("cancelOrders", cancelOrders);
+
   return (
     <div className="bg-[#F1F5F9] min-h-screen flex flex-col gap-5 px-4 py-10">
       <div className="flex justify-between items-center">

@@ -6,6 +6,9 @@ export interface Order {
   productName: string;
   amount: number;
   status: string;
+  email: string;
   createDt: string;
   updateDt: string;
+  tid: string;
+  paymentStatus: string;
 }

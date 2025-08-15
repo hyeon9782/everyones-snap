@@ -8,11 +8,16 @@ import GalleryFilterDrawer from "./gallery-filter-drawer";
 import { Bookmark, Download, Trash2 } from "lucide-react";
 import { usePhotoViewerStore } from "../model/store";
 import { cn } from "@/shared/lib/utils";
-import { downloadPhotos } from "@/features/photo-download/api/api";
+import {
+  compressedDownloadPresignedUrl,
+  compressedDownloadRequest,
+  downloadPhotos,
+} from "@/features/photo-download/api/api";
 import {
   downloadMultipleFiles,
   downloadAsZip,
   DownloadProgressCallback,
+  downloadFile,
 } from "@/shared/lib/file-utils";
 import { useState } from "react";
 import { deletePhoto } from "../api/api";
@@ -35,6 +40,8 @@ const GalleryToolbar = ({ eventIdx }: { eventIdx: number }) => {
     (state) => state.setSelectedPhotos
   );
 
+  const { user } = useUserStore();
+
   const toggleSelect = () => {
     setIsSelecting(!isSelecting);
     setSelectedPhotos([]);
@@ -52,31 +59,32 @@ const GalleryToolbar = ({ eventIdx }: { eventIdx: number }) => {
       setDownloadProgress(null);
       console.log("handleDownload", eventIdx, selectedPhotos);
 
-      const response = await downloadPhotos(
-        eventIdx,
-        selectedPhotos.map((photo) => photo.fileIdx)
-      );
+      if (selectedPhotos.length > 1) {
+        const requestResponse = await compressedDownloadRequest(
+          eventIdx,
+          selectedPhotos.map((photo) => photo.fileIdx)
+        );
 
-      const urls = (response.data as any).data.urls;
-      console.log("Download URLs:", urls);
+        console.log("requestResponse", requestResponse);
 
-      if (urls.length === 1) {
-        // 단일 파일인 경우 ZIP으로 다운로드
-        downloadAsZip(urls[0], "download.zip");
-      } else if (urls.length > 1) {
-        // 여러 파일인 경우 개별 다운로드 (진행 상황 추적)
-        const progressCallback: DownloadProgressCallback = (
-          current,
-          total,
-          filename
-        ) => {
-          setDownloadProgress({ current, total, filename });
-        };
+        const presignedUrlResponse = await pollForPresignedUrl(
+          eventIdx,
+          requestResponse.zipKey
+        );
 
-        await downloadMultipleFiles(urls, "photo", progressCallback);
+        console.log("presignedUrlResponse", presignedUrlResponse);
+
+        downloadAsZip(presignedUrlResponse, "download.zip");
+      } else {
+        const response = await downloadPhotos(
+          eventIdx,
+          selectedPhotos.map((photo) => photo.fileIdx)
+        );
+
+        downloadFile(response.urls[0], "download.jpg");
+
+        console.log("response", response);
       }
-
-      console.log("handleDownload response", response);
     } catch (error) {
       console.error("Download failed:", error);
       alert("다운로드에 실패했습니다. 다시 시도해주세요.");
@@ -86,7 +94,78 @@ const GalleryToolbar = ({ eventIdx }: { eventIdx: number }) => {
     }
   };
 
-  const { user } = useUserStore();
+  // 폴링 함수
+  const pollForPresignedUrl = async (
+    eventIdx: number,
+    zipKey: string
+  ): Promise<string> => {
+    const maxAttempts = 60; // 최대 60번 시도 (60초)
+    let attempts = 0;
+
+    return new Promise((resolve, reject) => {
+      const poll = async () => {
+        try {
+          attempts++;
+          console.log(`압축 상태 확인 중... (${attempts}/${maxAttempts})`);
+
+          const presignedUrlResponse = await compressedDownloadPresignedUrl(
+            eventIdx,
+            zipKey
+          );
+
+          console.log("presignedUrlResponse", presignedUrlResponse);
+
+          // 압축이 완료되어 URL을 받았을 때
+          if (presignedUrlResponse && presignedUrlResponse.url) {
+            console.log("압축 완료! 다운로드를 시작합니다.");
+            resolve(presignedUrlResponse.url);
+            return;
+          }
+
+          // 최대 시도 횟수에 도달했을 때
+          if (attempts >= maxAttempts) {
+            reject(
+              new Error(
+                "압축 대기 시간이 초과되었습니다. 잠시 후 다시 시도해주세요."
+              )
+            );
+            return;
+          }
+
+          // 1초 후 다시 시도
+          setTimeout(poll, 1000);
+        } catch (error: any) {
+          console.log("폴링 중 응답:", error);
+
+          // 404 에러이고 "아직 압축이 완료되지 않았습니다" 메시지인 경우
+          if (error?.response?.status === 404 || error?.status === 404) {
+            console.log("압축이 아직 진행중입니다. 계속 기다립니다...");
+
+            // 최대 시도 횟수 체크
+            if (attempts >= maxAttempts) {
+              reject(
+                new Error(
+                  "압축 대기 시간이 초과되었습니다. 잠시 후 다시 시도해주세요."
+                )
+              );
+              return;
+            }
+
+            // 1초 후 다시 시도
+            setTimeout(poll, 1000);
+            return;
+          }
+
+          // 404가 아닌 다른 에러는 실제 에러로 처리
+          console.error("폴링 중 실제 오류:", error);
+          reject(error);
+        }
+      };
+
+      // 첫 번째 폴링 시작
+      poll();
+    });
+  };
 
   const handleDelete = async () => {
     const confirm = window.confirm(

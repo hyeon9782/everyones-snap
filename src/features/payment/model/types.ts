@@ -11,6 +11,7 @@ export interface CreateOrderRequest {
   productName: string;
   amount: number;
   userIdx: number;
+  email: string;
 }
 
 export interface CreateOrderResponse {
