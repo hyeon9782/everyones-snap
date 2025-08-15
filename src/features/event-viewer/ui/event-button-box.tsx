@@ -20,6 +20,7 @@ const EventButtonBox = ({ isHost, event, planUsage }: Props) => {
             eventTitle={event.eventTitle}
             qrImageUrl={event.qrImageUrl}
             shortUrl={event.shortUrl}
+            qrToken={event.qrToken}
           />
           <Link
             href={`/gallery/${event.qrToken}?eventIdx=${event.eventIdx}`}

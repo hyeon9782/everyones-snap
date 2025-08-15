@@ -16,9 +16,15 @@ type Props = {
   eventTitle: string;
   qrImageUrl: string;
   shortUrl: string;
+  qrToken: string;
 };
 
-const EventShareDrawer = ({ eventTitle, qrImageUrl, shortUrl }: Props) => {
+const EventShareDrawer = ({
+  eventTitle,
+  qrImageUrl,
+  shortUrl,
+  qrToken,
+}: Props) => {
   const handleMessageShare = async () => {
     const shareText = `${eventTitle} 이벤트에 초대합니다! ${shortUrl}`;
 
@@ -91,7 +97,7 @@ const EventShareDrawer = ({ eventTitle, qrImageUrl, shortUrl }: Props) => {
   };
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(shortUrl);
+    navigator.clipboard.writeText(`${location.origin}/guest/${qrToken}`);
   };
 
   const handleDownloadQR = async () => {

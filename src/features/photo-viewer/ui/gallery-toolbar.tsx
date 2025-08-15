@@ -13,12 +13,7 @@ import {
   compressedDownloadRequest,
   downloadPhotos,
 } from "@/features/photo-download/api/api";
-import {
-  downloadMultipleFiles,
-  downloadAsZip,
-  DownloadProgressCallback,
-  downloadFile,
-} from "@/shared/lib/file-utils";
+import { downloadAsZip, downloadFile } from "@/shared/lib/file-utils";
 import { useState } from "react";
 import { deletePhoto } from "../api/api";
 import { useUserStore } from "@/features/login/model/store";

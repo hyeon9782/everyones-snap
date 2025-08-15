@@ -17,6 +17,7 @@ import { useUserStore } from "@/features/login/model/store";
 import UploadController from "./upload-controller";
 import FileItem from "./file-item";
 import { UplaodStatus, UploadPhoto } from "../model/types";
+import Link from "next/link";
 
 interface UploadFile {
   id: string;
@@ -290,7 +291,13 @@ const UploadDrawer = ({ eventIdx }: { eventIdx: number }) => {
           {/* 하단 정보 */}
           {files.length === 0 && (
             <div className="text-center py-2">
-              <p className="text-sm text-gray-500">파일 업로드 및 보관 정책</p>
+              <Link
+                href={`https://imminent-drop-afd.notion.site/2505eb23b550801cbcbbd3355c744509?pvs=73`}
+                className="text-sm text-gray-500"
+                target="_blank"
+              >
+                파일 업로드 및 보관 정책
+              </Link>
             </div>
           )}
         </div>

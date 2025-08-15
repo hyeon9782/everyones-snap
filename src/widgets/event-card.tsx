@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 type Props = {
   isHost: boolean;
   event: Event;
-  planUsage: PlanUsage;
+  planUsage?: PlanUsage;
 };
 
 const EventCard = ({ isHost, event, planUsage }: Props) => {
