@@ -1,14 +1,14 @@
 import { httpClient } from "@/shared/api/base-client";
+import {
+  LoginRequest,
+  LoginResponse,
+  SignupRequest,
+  SignupResponse,
+} from "../model/types";
 
-export const login = async ({
-  id,
-  platformType,
-}: {
-  id: string;
-  platformType: "kakao";
-}) => {
+export const login = async ({ code, platformType }: LoginRequest) => {
   return httpClient.post("/v1/users/login", {
-    id,
+    code,
     platformType,
   });
 };
@@ -19,18 +19,14 @@ export const signup = async ({
   personalInfo,
   terms,
   marketing,
-}: {
-  id: string;
-  platformType: "kakao";
-  personalInfo: "y" | "n";
-  terms: "y" | "n";
-  marketing: "y" | "n";
-}) => {
-  return httpClient.post("/v1/users/signUp", {
-    id,
-    platformType,
-    personalInfo,
-    terms,
-    marketing,
-  });
+}: SignupRequest) => {
+  return httpClient
+    .post("/v1/users/signUp", {
+      id,
+      platformType,
+      personalInfo,
+      terms,
+      marketing,
+    })
+    .then((res) => (res.data as any).data as SignupResponse);
 };

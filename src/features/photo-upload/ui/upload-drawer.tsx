@@ -8,18 +8,21 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/shared/ui/drawer";
-import { X, Upload, Camera, Video, Check, AlertCircle } from "lucide-react";
+import { X, PlusCircle } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { useState, useRef, useCallback, useEffect } from "react";
 import { getPresignedUrl, uploadPhotos } from "../api/photo.api";
 import Image from "next/image";
 import { useUserStore } from "@/features/login/model/store";
+import UploadController from "./upload-controller";
+import FileItem from "./file-item";
+import { UplaodStatus, UploadPhoto } from "../model/types";
 
 interface UploadFile {
   id: string;
   file: File;
   progress: number;
-  status: "uploading" | "s3-completed" | "completed" | "error";
+  status: UplaodStatus;
   url?: string;
 }
 
@@ -140,11 +143,14 @@ const UploadDrawer = ({ eventIdx }: { eventIdx: number }) => {
           (file) => file.status === "s3-completed"
         );
 
-        const photoData = completedFiles.map((file) => ({
+        console.log("completedFiles", completedFiles);
+
+        const photoData: UploadPhoto[] = completedFiles.map((file) => ({
           eventIdx: eventIdx, // 실제 eventIdx로 변경 필요
-          userIdx: user?.userIdx, // 실제 userIdx로 변경 필요
-          guestIdx: 100, // 실제 guestIdx로 변경 필요 (optional일 수 있음)
+          userIdx: user?.userIdx || 0, // 실제 userIdx로 변경 필요
+          guestIdx: user?.userIdx ? 0 : 100, // 실제 guestIdx로 변경 필요 (optional일 수 있음)
           mediaType: file.file.type.startsWith("image/") ? "image" : "video",
+          fileName: file.file.name,
           type: file.file.type,
           url: file.url!,
           isThumbnail: "n",
@@ -186,53 +192,6 @@ const UploadDrawer = ({ eventIdx }: { eventIdx: number }) => {
     checkAndSubmitToApi();
   }, [checkAndSubmitToApi]);
 
-  const handleButtonClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
-  };
-
-  const getFileIcon = (file: File) => {
-    if (file.type.startsWith("image/")) {
-      return <Camera className="w-5 h-5" />;
-    } else if (file.type.startsWith("video/")) {
-      return <Video className="w-5 h-5" />;
-    }
-    return <Upload className="w-5 h-5" />;
-  };
-
-  const getStatusIcon = (status: UploadFile["status"]) => {
-    switch (status) {
-      case "completed":
-        return <Check className="w-4 h-4 text-green-500" />;
-      case "error":
-        return <AlertCircle className="w-4 h-4 text-red-500" />;
-      default:
-        return null;
-    }
-  };
-
-  const getStatusText = (status: UploadFile["status"]) => {
-    switch (status) {
-      case "uploading":
-        return "업로드 중...";
-      case "s3-completed":
-        return isSubmittingToApi ? "서버 전송 중..." : "업로드 완료";
-      case "completed":
-        return "완료";
-      case "error":
-        return "실패";
-      default:
-        return "";
-    }
-  };
-
   const completedFiles = files.filter((f) => f.status === "completed").length;
   const s3CompletedFiles = files.filter(
     (f) => f.status === "s3-completed" || f.status === "completed"
@@ -246,6 +205,11 @@ const UploadDrawer = ({ eventIdx }: { eventIdx: number }) => {
   // 전체 완료 진행률
   const overallProgress =
     totalFiles > 0 ? Math.round((completedFiles / totalFiles) * 100) : 0;
+
+  const handleCloseClick = () => {
+    setIsOpen(false);
+    setFiles([]);
+  };
 
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
@@ -265,8 +229,13 @@ const UploadDrawer = ({ eventIdx }: { eventIdx: number }) => {
       <DrawerContent className="max-h-[85vh]">
         <DrawerHeader className="relative">
           <DrawerTitle>업로드</DrawerTitle>
-          <DrawerClose asChild className="absolute right-3 top-8">
-            <Button variant="ghost" size="icon" className="w-[36px] h-[36px]">
+          <DrawerClose asChild className="absolute right-3 top-2">
+            <Button
+              onClick={handleCloseClick}
+              variant="ghost"
+              size="icon"
+              className="w-[36px] h-[36px]"
+            >
               <X
                 style={{ width: "24px", height: "24px" }}
                 className="text-black"
@@ -275,106 +244,53 @@ const UploadDrawer = ({ eventIdx }: { eventIdx: number }) => {
           </DrawerClose>
         </DrawerHeader>
 
-        <div className="px-4 pb-6 space-y-4">
+        <div className="px-4 pb-6 space-y-2">
           {/* 전체 진행률 */}
           {files.length > 0 && (
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-medium">
-                  {isSubmittingToApi
-                    ? "서버 전송 중..."
-                    : `업로드 진행률 ${overallProgress}%`}
-                </span>
-                <span className="text-gray-500">
-                  {completedFiles}/{totalFiles}
-                </span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    isSubmittingToApi ? "bg-blue-500" : "bg-green-500"
-                  }`}
-                  style={{ width: `${overallProgress}%` }}
-                />
-              </div>
-
-              {/* S3 업로드 진행률 (디버깅용) */}
-              {s3Progress > 0 && s3Progress < 100 && (
-                <div className="text-xs text-gray-500">
-                  S3 업로드: {s3CompletedFiles}/{totalFiles} ({s3Progress}%)
-                </div>
-              )}
-            </div>
+            <UploadController
+              isSubmittingToApi={isSubmittingToApi}
+              overallProgress={overallProgress}
+              s3Progress={s3Progress}
+              s3CompletedFiles={s3CompletedFiles}
+              totalFiles={totalFiles}
+              completedFiles={completedFiles}
+            />
           )}
 
-          {/* 파일 선택 영역 */}
-          <div className="border-2 border-dashed rounded-lg p-8 text-center transition-colors border-gray-300 hover:border-gray-400">
-            <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-            <p className="text-lg font-medium mb-2">
-              파일을 여기로 끌어다 놓으세요
-            </p>
-            <p className="text-gray-500 mb-4">
-              또는 버튼을 클릭해서 파일을 선택하세요
-            </p>
-            <Button onClick={handleButtonClick} variant="outline">
-              파일 선택
-            </Button>
-          </div>
-
-          {/* 숨겨진 파일 입력 */}
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            accept="image/*,video/*"
-            className="hidden"
-            onChange={(e) => handleFileSelect(e.target.files)}
-          />
+          {files.length === 0 && (
+            <label className="w-full h-[302px] bg-[#F1F5F9] flex flex-col items-center justify-center gap-2 cursor-pointer rounded-lg">
+              <div className="flex items-center gap-2 text-[#667085]">
+                <PlusCircle className="size-5" />
+                <span className="text-[16px] font-semibold">파일 선택</span>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept="image/*,video/*"
+                className="hidden"
+                onChange={(e) => handleFileSelect(e.target.files)}
+              />
+            </label>
+          )}
 
           {/* 파일 목록 */}
           {files.length > 0 && (
-            <div className="space-y-3 max-h-60 overflow-y-auto">
+            <div className="space-y-2 max-h-60 overflow-y-auto bg-[#F1F5F9] rounded-lg p-4">
               {files.map((uploadFile) => (
-                <div key={uploadFile.id} className="border rounded-lg p-3">
-                  <div className="flex items-center space-x-3">
-                    <div className="flex-shrink-0 w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                      {getFileIcon(uploadFile.file)}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-sm font-medium truncate">
-                          {uploadFile.file.name}
-                        </p>
-                        {getStatusIcon(uploadFile.status)}
-                      </div>
-
-                      <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
-                        <span>{formatFileSize(uploadFile.file.size)}</span>
-                        <span>{getStatusText(uploadFile.status)}</span>
-                      </div>
-
-                      {uploadFile.status === "uploading" && (
-                        <div className="w-full bg-gray-200 rounded-full h-1">
-                          <div
-                            className="bg-blue-500 h-1 rounded-full transition-all duration-300"
-                            style={{ width: `${uploadFile.progress}%` }}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                <FileItem
+                  key={uploadFile.id}
+                  uploadFile={uploadFile}
+                  isSubmittingToApi={isSubmittingToApi}
+                />
               ))}
             </div>
           )}
 
           {/* 하단 정보 */}
           {files.length === 0 && (
-            <div className="text-center py-4">
-              <p className="text-sm text-gray-500">
-                파일을 업로드할 준비가 되었습니다
-              </p>
+            <div className="text-center py-2">
+              <p className="text-sm text-gray-500">파일 업로드 및 보관 정책</p>
             </div>
           )}
         </div>

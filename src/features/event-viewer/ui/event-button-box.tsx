@@ -1,6 +1,6 @@
 import EventMorePopup from "./event-more-popup";
 import EventShareDrawer from "./event-share-drawer";
-import { Event } from "@/features/event-viewer/model/types";
+import { Event, PlanUsage } from "@/features/event-viewer/model/types";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,9 +8,10 @@ import Image from "next/image";
 type Props = {
   isHost: boolean;
   event: Event;
+  planUsage: PlanUsage;
 };
 
-const EventButtonBox = ({ isHost, event }: Props) => {
+const EventButtonBox = ({ isHost, event, planUsage }: Props) => {
   return (
     <div>
       {isHost ? (
@@ -33,7 +34,11 @@ const EventButtonBox = ({ isHost, event }: Props) => {
             갤러리
           </Link>
 
-          <EventMorePopup eventId={event.eventIdx} event={event} />
+          <EventMorePopup
+            eventId={event.eventIdx}
+            event={event}
+            planUsage={planUsage}
+          />
         </div>
       ) : (
         <div className="flex gap-3">

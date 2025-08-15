@@ -125,7 +125,7 @@ const GalleryPage = ({ params }: { params: Promise<{ qrToken: string }> }) => {
         </div>
       )}
 
-      <div className="fixed bottom-0 left-0 right-0 flex justify-center items-center h-[72px] w-full bg-white gap-2 px-4">
+      <div className="fixed bottom-0 left-0 right-0 flex justify-center items-center h-[72px] w-full bg-white gap-2 px-4 md:w-[375px] mx-auto">
         <Button className="w-[48px] h-[48px] bg-[#F1F5F9] rounded-xl">
           <Image
             src="/images/download.svg"

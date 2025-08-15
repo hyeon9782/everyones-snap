@@ -13,10 +13,33 @@ export interface Event {
   isEventDtUpdate: "n" | "y";
   isGalleryPublic: "y" | "n";
   mainImageUrl: string;
-  planIdx: number;
+  planIdx: number | null;
   qrToken: string;
   shortUrl: string;
   qrImageUrl: string;
   createDt: string;
-  updateDt: string;
+  updateDt: string | null;
+  eventStat: {
+    eventStatIdx: number;
+    eventIdx: number;
+    guestCount: number;
+    photoCount: number;
+    videoCount: number;
+    visitorNoteCount: number;
+    photoStorage: number;
+    videoStorage: number;
+    createDt: string;
+    updateDt: string | null;
+  };
+  eventCategory: {
+    eventCategoryIdx: number;
+    eventCategoryName: string;
+  };
+}
+
+export interface PlanUsage {
+  userPlanIdx: number;
+  status: string;
+  eventLimit: number;
+  remainingEvents: number;
 }

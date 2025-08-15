@@ -42,6 +42,8 @@ const KakaoCallbackPage = () => {
           if (data.isNewUser) {
             // 새 사용자인 경우 sessionStorage에 id 저장하고 term 페이지로 이동
             sessionStorage.setItem("tempUserId", data.id);
+            sessionStorage.setItem("tempCode", code ?? "");
+            sessionStorage.setItem("tempEmail", response.data.data.email);
             router.push("/term");
           } else {
             // 완전한 로그인
@@ -59,6 +61,7 @@ const KakaoCallbackPage = () => {
 
             // 상태 정리
             sessionStorage.removeItem("kakao_state");
+            console.log("data", data);
 
             setUser(data);
 

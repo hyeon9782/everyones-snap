@@ -1,14 +1,15 @@
 import EventButtonBox from "@/features/event-viewer/ui/event-button-box";
-import { Event } from "@/features/event-viewer/model/types";
+import { Event, PlanUsage } from "@/features/event-viewer/model/types";
 import Image from "next/image";
 import dayjs from "dayjs";
 
 type Props = {
   isHost: boolean;
   event: Event;
+  planUsage: PlanUsage;
 };
 
-const EventCard = ({ isHost, event }: Props) => {
+const EventCard = ({ isHost, event, planUsage }: Props) => {
   return (
     <article className="bg-white rounded-lg ">
       <Image
@@ -103,7 +104,7 @@ const EventCard = ({ isHost, event }: Props) => {
             </div>
           </div>
         )}
-        <EventButtonBox isHost={isHost} event={event} />
+        <EventButtonBox isHost={isHost} event={event} planUsage={planUsage} />
       </div>
     </article>
   );

@@ -8,7 +8,7 @@ import {
 import { Button } from "@/shared/ui/button";
 import Image from "next/image";
 import { X } from "lucide-react";
-import { Event } from "@/features/event-viewer/model/types";
+import { Event, PlanUsage } from "@/features/event-viewer/model/types";
 import dayjs from "dayjs";
 import { bytesToGB } from "@/shared/lib/file-utils";
 import { DualProgress } from "@/shared/ui/dual-progress";
@@ -17,6 +17,7 @@ type Props = {
   isOpen: boolean;
   close: () => void;
   event: Event;
+  planUsage: PlanUsage;
 };
 
 const eventCategoryMap: Record<number, string> = {
@@ -26,7 +27,7 @@ const eventCategoryMap: Record<number, string> = {
   4: "기타",
 };
 
-const EventDetailDrawer = ({ event, isOpen, close }: Props) => {
+const EventDetailDrawer = ({ event, isOpen, close, planUsage }: Props) => {
   return (
     <Drawer open={isOpen} onOpenChange={close}>
       <DrawerContent>
@@ -122,7 +123,7 @@ const EventDetailDrawer = ({ event, isOpen, close }: Props) => {
                 <span className="text-[16px] font-medium">참여 게스트 수</span>
               </div>
               <div className="text-[16px] font-normal">
-                {event.eventStat.guestCount} / 1000명
+                {event.eventStat.guestCount}명
               </div>
             </div>
             <div className="flex justify-between items-center w-full">
@@ -138,7 +139,8 @@ const EventDetailDrawer = ({ event, isOpen, close }: Props) => {
                 <span className="text-[16px] font-medium">사진</span>
               </div>
               <div className="text-[16px] font-normal">
-                {event.eventStat.photoCount} / 100개
+                {event.eventStat.photoCount} /{" "}
+                {planUsage ? planUsage.photoLimitSnapshot : 10}개
               </div>
             </div>
             <div className="flex justify-between items-center w-full">
@@ -154,7 +156,8 @@ const EventDetailDrawer = ({ event, isOpen, close }: Props) => {
                 <span className="text-[16px] font-medium">영상</span>
               </div>
               <div className="text-[16px] font-normal">
-                {event.eventStat.videoCount} / 10개
+                {event.eventStat.videoCount} /{" "}
+                {planUsage ? planUsage.videoLimitSnapshot : 10}개
               </div>
             </div>
             <div className="flex justify-between items-center w-full">
@@ -169,11 +172,13 @@ const EventDetailDrawer = ({ event, isOpen, close }: Props) => {
                 </div>
                 <span className="text-[16px] font-medium">메시지</span>
               </div>
-              <div className="text-[16px] font-normal">53개</div>
+              <div className="text-[16px] font-normal">
+                {event.eventStat.visitorNoteCount}개
+              </div>
             </div>
           </div>
           {/* 용량 정보 */}
-          <div className="flex items-center gap-3 bg-[#F2F2F7] w-full rounded-[20px] px-5 py-4 flex-col">
+          {/* <div className="flex items-center gap-3 bg-[#F2F2F7] w-full rounded-[20px] px-5 py-4 flex-col">
             <div className="flex justify-between items-center w-full">
               <div className="flex items-center gap-2">
                 <div className="w-[24px] h-[24px] flex justify-center items-center">
@@ -201,7 +206,7 @@ const EventDetailDrawer = ({ event, isOpen, close }: Props) => {
                 className="h-[20px]"
               />
             </div>
-          </div>
+          </div> */}
         </div>
       </DrawerContent>
     </Drawer>

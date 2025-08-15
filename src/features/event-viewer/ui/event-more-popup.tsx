@@ -13,14 +13,15 @@ import {
 } from "@/shared/ui/dropdown-menu";
 import Link from "next/link";
 import EventDetailDrawer from "./event-detail-drawer";
-import { Event } from "@/features/event-viewer/model/types";
+import { Event, PlanUsage } from "@/features/event-viewer/model/types";
 
 type Props = {
   eventId: number;
   event: Event;
+  planUsage: PlanUsage;
 };
 
-const EventMorePopup = ({ eventId, event }: Props) => {
+const EventMorePopup = ({ eventId, event, planUsage }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   console.log(event);
@@ -45,6 +46,7 @@ const EventMorePopup = ({ eventId, event }: Props) => {
       </DropdownMenu>
       <EventDetailDrawer
         event={event}
+        planUsage={planUsage}
         isOpen={isOpen}
         close={() => setIsOpen(false)}
       />

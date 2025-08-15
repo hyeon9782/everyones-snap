@@ -24,14 +24,20 @@ const HostPage = async ({ params }: { params: Promise<{ id: string }> }) => {
     console.log("No accessToken found in cookies");
   }
 
-  const events = await getEventList(Number(id));
+  const response = await getEventList(Number(id));
 
   // const events = [];
+
+  const events = response.events;
+
+  const planUsage = response.planUsage;
+
+  console.log("response", response);
 
   console.log("eventList", events);
 
   return (
-    <div className="bg-[#F2F2F7] flex flex-col gap-5">
+    <div className="bg-[#F2F2F7] flex flex-col gap-5 min-h-screen">
       <EventFilterBox />
       <div className="px-4 pb-[90px]">
         {events.length === 0 ? (
@@ -43,11 +49,16 @@ const HostPage = async ({ params }: { params: Promise<{ id: string }> }) => {
           </div>
         ) : (
           events?.map((event) => (
-            <EventCard isHost={true} key={event.eventIdx} event={event} />
+            <EventCard
+              isHost={true}
+              key={event.eventIdx}
+              event={event}
+              planUsage={planUsage}
+            />
           ))
         )}
       </div>
-      <div className="fixed bottom-0 w-full bg-white h-[90px] flex justify-center items-center px-5">
+      <div className="fixed bottom-0 w-full bg-white h-[90px] flex justify-center items-center px-5 md:w-[375px] mx-auto">
         <Link
           href="/event/edit"
           className="w-full rounded-[10px] h-[50px] flex justify-center gap-[6px] items-center text-[18px] font-semibold text-black bg-[#F2F2F7]"

@@ -33,5 +33,5 @@ export const deleteEvent = async (eventIdx: number) => {
 export const getEventList = async (userIdx: number) => {
   return httpClient
     .get(`/v1/users/${userIdx}/events`)
-    .then((res) => (res.data as any).data.events as Event[]);
+    .then((res) => (res.data as any).data);
 };

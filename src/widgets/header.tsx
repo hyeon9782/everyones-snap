@@ -1,5 +1,6 @@
 "use client";
 
+import { useUserStore } from "@/features/login/model/store";
 import { Button } from "@/shared/ui/button";
 import { MenuIcon } from "lucide-react";
 import Link from "next/link";
@@ -10,14 +11,19 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
 
+  const { user, logout } = useUserStore();
+
+  console.log("user", user);
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const isLoging = true;
+  const isLoging = user?.userIdx ? true : false;
 
   const handleLogoutClick = () => {
     alert("로그아웃");
+    logout();
     router.push("/login");
     toggleMenu();
   };
@@ -59,7 +65,7 @@ const Header = () => {
           )}
           {isLoging && (
             <Link
-              href="/pricing"
+              href={`/host/${user?.userIdx}`}
               onClick={toggleMenu}
               className="text-center block px-4 py-3 text-black hover:bg-blue-50 rounded-lg text-[16px] font-semibold"
             >
@@ -67,7 +73,7 @@ const Header = () => {
             </Link>
           )}
           <Link
-            href="/pricing"
+            href="/price"
             onClick={toggleMenu}
             className="text-center block px-4 py-3 text-black hover:bg-blue-50 rounded-lg text-[16px] font-semibold"
           >
