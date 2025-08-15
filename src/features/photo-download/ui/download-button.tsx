@@ -44,8 +44,6 @@ const DownloadButton = ({
       // API에서 presigned URL 가져오기
       const response = await downloadPhotos(eventIdx, fileIdxs);
 
-      console.log("response", response);
-
       // 파일 다운로드 실행
       if (fileIdxs.length === 1 && response.urls[0]) {
         // 단일 파일 다운로드

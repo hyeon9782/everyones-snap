@@ -1,20 +1,10 @@
 import { httpClient } from "@/shared/api/base-client";
+import { useMutation } from "@tanstack/react-query";
+import { GuestbookWriteRequest } from "../model/types";
 
-export const writeGuestbook = async ({
-  eventIdx,
-  guestName,
-  content,
-}: {
-  eventIdx: number;
-  guestName: string;
-  content: string;
-}) => {
+export const writeGuestbook = async (payload: GuestbookWriteRequest) => {
   return httpClient
-    .post(`/v1/visitor-notes`, {
-      eventIdx,
-      guestName,
-      content,
-    })
+    .post(`/v1/visitor-notes`, payload)
     .then((res) => (res.data as any).data);
 };
 
@@ -40,4 +30,22 @@ export const deleteGuestbook = async ({
   return httpClient
     .delete(`/v1/visitor-notes/${visitorNoteIdx}`)
     .then((res) => (res.data as any).data);
+};
+
+export const useWriteGuestbookMutation = () => {
+  return useMutation({
+    mutationFn: writeGuestbook,
+  });
+};
+
+export const useUpdateGuestbookMutation = () => {
+  return useMutation({
+    mutationFn: updateGuestbook,
+  });
+};
+
+export const useDeleteGuestbookMutation = () => {
+  return useMutation({
+    mutationFn: deleteGuestbook,
+  });
 };

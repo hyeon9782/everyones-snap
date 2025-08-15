@@ -1,6 +1,34 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
+/* 나눔명조 */
+@import url("https://fonts.googleapis.com/earlyaccess/nanummyeongjo.css");
+
+/* 나눔바른펜 */
+@font-face {
+  font-family: "NanumBarunpen";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumBarunpen.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* 폰트별 클래스 */
+.font-myeongjo {
+  font-family: "Nanum Myeongjo", serif !important;
+}
+
+.font-barunpen {
+  font-family: "NanumBarunpen", cursive !important;
+}
+
+body {
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
+    sans-serif;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

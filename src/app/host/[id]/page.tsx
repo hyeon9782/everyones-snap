@@ -15,13 +15,7 @@ const HostPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const accessToken = cookieStore.get("accessToken")?.value;
 
   if (accessToken) {
-    console.log(
-      "Found accessToken in cookies:",
-      accessToken.substring(0, 10) + "..."
-    );
     httpClient.setTokenFromString(accessToken);
-  } else {
-    console.log("No accessToken found in cookies");
   }
 
   const response = await getEventList(Number(id));
@@ -31,10 +25,6 @@ const HostPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const events = response.events;
 
   const planUsage = response.planUsage;
-
-  console.log("response", response);
-
-  console.log("eventList", events);
 
   return (
     <div className="bg-[#F2F2F7] flex flex-col gap-5 min-h-screen">

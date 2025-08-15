@@ -70,7 +70,6 @@ const GalleryPage = ({ params }: { params: Promise<{ qrToken: string }> }) => {
     // 스크롤이 하단에서 200px 이내에 도달했을 때 다음 페이지 로드
     if (scrollTop + windowHeight >= documentHeight - 200) {
       if (hasNextPage && !isFetchingNextPage) {
-        console.log("Loading next page...");
         fetchNextPage();
       }
     }

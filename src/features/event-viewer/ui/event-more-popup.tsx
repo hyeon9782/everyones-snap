@@ -24,8 +24,6 @@ type Props = {
 const EventMorePopup = ({ event, planUsage }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  console.log(event);
-
   const { user } = useUserStore();
 
   return (

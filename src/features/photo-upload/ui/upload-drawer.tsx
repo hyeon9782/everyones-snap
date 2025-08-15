@@ -35,9 +35,6 @@ const UploadDrawer = ({ eventIdx }: { eventIdx: number }) => {
 
   const { user } = useUserStore();
 
-  console.log("user", user);
-  console.log("eventIdx", eventIdx);
-
   const handleFileSelect = useCallback((selectedFiles: FileList | null) => {
     if (!selectedFiles) return;
 
@@ -144,8 +141,6 @@ const UploadDrawer = ({ eventIdx }: { eventIdx: number }) => {
           (file) => file.status === "s3-completed"
         );
 
-        console.log("completedFiles", completedFiles);
-
         const photoData: UploadPhoto[] = completedFiles.map((file) => ({
           eventIdx: eventIdx, // 실제 eventIdx로 변경 필요
           userIdx: user?.userIdx || 0, // 실제 userIdx로 변경 필요
@@ -157,8 +152,6 @@ const UploadDrawer = ({ eventIdx }: { eventIdx: number }) => {
           isThumbnail: "n",
           fileSize: file.file.size,
         }));
-
-        console.log("API에 전송할 데이터:", photoData);
 
         // uploadPhotos API 호출
         await uploadPhotos({
@@ -172,8 +165,6 @@ const UploadDrawer = ({ eventIdx }: { eventIdx: number }) => {
             f.status === "s3-completed" ? { ...f, status: "completed" } : f
           )
         );
-
-        console.log("모든 파일 업로드 완료!");
       } catch (error) {
         console.error("API 전송 실패:", error);
         // 에러 발생 시 해당 파일들을 에러 상태로 변경

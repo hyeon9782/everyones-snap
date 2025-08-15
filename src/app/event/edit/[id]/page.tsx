@@ -15,18 +15,10 @@ const EventEditPage = async ({
   const accessToken = cookieStore.get("accessToken")?.value;
 
   if (accessToken) {
-    console.log(
-      "Found accessToken in cookies:",
-      accessToken.substring(0, 10) + "..."
-    );
     httpClient.setTokenFromString(accessToken);
-  } else {
-    console.log("No accessToken found in cookies");
   }
 
   const response = await getEventList(id);
-
-  console.log("response", response);
 
   return (
     <main className="bg-[#F2F2F7] flex flex-col gap-5 min-h-screen">

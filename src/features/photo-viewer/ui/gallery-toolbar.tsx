@@ -52,7 +52,6 @@ const GalleryToolbar = ({ eventIdx }: { eventIdx: number }) => {
     try {
       setIsDownloading(true);
       setDownloadProgress(null);
-      console.log("handleDownload", eventIdx, selectedPhotos);
 
       if (selectedPhotos.length > 1) {
         const requestResponse = await compressedDownloadRequest(
@@ -60,14 +59,10 @@ const GalleryToolbar = ({ eventIdx }: { eventIdx: number }) => {
           selectedPhotos.map((photo) => photo.fileIdx)
         );
 
-        console.log("requestResponse", requestResponse);
-
         const presignedUrlResponse = await pollForPresignedUrl(
           eventIdx,
           requestResponse.zipKey
         );
-
-        console.log("presignedUrlResponse", presignedUrlResponse);
 
         downloadAsZip(presignedUrlResponse, "download.zip");
       } else {
@@ -77,8 +72,6 @@ const GalleryToolbar = ({ eventIdx }: { eventIdx: number }) => {
         );
 
         downloadFile(response.urls[0], "download.jpg");
-
-        console.log("response", response);
       }
     } catch (error) {
       console.error("Download failed:", error);
@@ -101,18 +94,14 @@ const GalleryToolbar = ({ eventIdx }: { eventIdx: number }) => {
       const poll = async () => {
         try {
           attempts++;
-          console.log(`압축 상태 확인 중... (${attempts}/${maxAttempts})`);
 
           const presignedUrlResponse = await compressedDownloadPresignedUrl(
             eventIdx,
             zipKey
           );
 
-          console.log("presignedUrlResponse", presignedUrlResponse);
-
           // 압축이 완료되어 URL을 받았을 때
           if (presignedUrlResponse && presignedUrlResponse.url) {
-            console.log("압축 완료! 다운로드를 시작합니다.");
             resolve(presignedUrlResponse.url);
             return;
           }
@@ -130,12 +119,8 @@ const GalleryToolbar = ({ eventIdx }: { eventIdx: number }) => {
           // 1초 후 다시 시도
           setTimeout(poll, 1000);
         } catch (error: any) {
-          console.log("폴링 중 응답:", error);
-
           // 404 에러이고 "아직 압축이 완료되지 않았습니다" 메시지인 경우
           if (error?.response?.status === 404 || error?.status === 404) {
-            console.log("압축이 아직 진행중입니다. 계속 기다립니다...");
-
             // 최대 시도 횟수 체크
             if (attempts >= maxAttempts) {
               reject(
@@ -174,8 +159,6 @@ const GalleryToolbar = ({ eventIdx }: { eventIdx: number }) => {
       userIdx: user?.userIdx,
       guestIdx: selectedPhotos[0].guestIdx,
     });
-
-    console.log("response", response);
 
     if (response.success) {
       alert("사진이 삭제되었습니다.");

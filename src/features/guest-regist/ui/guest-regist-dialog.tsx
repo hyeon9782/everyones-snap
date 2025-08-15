@@ -33,7 +33,7 @@ const GuestRegistDialog = ({
         name,
         deviceId: getDeviceId(),
       });
-      console.log(response);
+
       localStorage.setItem("deviceId", response.deviceId);
       setGuest(response);
       addVisitedEvent(eventIdx);

@@ -29,8 +29,6 @@ const GuestPage = () => {
     if (event?.eventIdx) {
       const firstVisit = isFirstVisit(event.eventIdx);
       setIsDialogOpen(firstVisit);
-
-      console.log(`이벤트 ${event.eventIdx} 첫 방문:`, firstVisit);
     }
   }, [event]);
 

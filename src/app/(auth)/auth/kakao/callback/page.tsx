@@ -33,8 +33,6 @@ const KakaoCallbackPage = () => {
           platformType: "kakao",
         });
 
-        console.log("Backend response:", response);
-
         // 응답 구조에 따라 수정 필요
         if (response.data && response.data.message === "success") {
           const { data } = response.data;
@@ -61,7 +59,6 @@ const KakaoCallbackPage = () => {
 
             // 상태 정리
             sessionStorage.removeItem("kakao_state");
-            console.log("data", data);
 
             setUser(data);
 

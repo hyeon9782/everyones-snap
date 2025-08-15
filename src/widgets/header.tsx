@@ -13,8 +13,6 @@ const Header = () => {
 
   const { user, logout } = useUserStore();
 
-  console.log("user", user);
-
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };

@@ -24,7 +24,7 @@ const TermPage = () => {
 
     if (!storedId || !storedCode || !storedEmail) {
       // id가 없으면 로그인 페이지로 리다이렉트
-      console.log("No user ID found in sessionStorage, redirecting to login");
+
       router.push("/login");
       return;
     }
@@ -43,7 +43,6 @@ const TermPage = () => {
 
   // 전체 동의 체크박스 변경
   const handleAllCheck = (checked: boolean) => {
-    console.log("전체 동의 체크:", checked);
     setTerms(checked);
     setPersonalInfo(checked);
     setMarketing(checked);
@@ -63,8 +62,6 @@ const TermPage = () => {
         terms: terms ? "y" : "n",
         marketing: marketing ? "y" : "n",
       });
-
-      console.log("Signup response:", response);
 
       router.push(`/host/${response.userIdx}`);
     } catch (error) {

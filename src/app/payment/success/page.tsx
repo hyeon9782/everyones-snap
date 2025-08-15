@@ -19,7 +19,6 @@ const PaymentSuccessPage = () => {
     enabled: !!orderId,
   });
 
-  console.log("order", order);
   return (
     <div className="bg-[#F1F5F9] h-screen flex flex-col gap-10 px-4 py-10">
       <div className="bg-white rounded-lg px-5 py-7 flex flex-col gap-5">

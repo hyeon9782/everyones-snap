@@ -26,11 +26,7 @@ const ThumbnailBox = ({ thumbnail, onChange }: Props) => {
           id: "1",
         });
 
-        console.log("response", response);
-
         const presignedUrl = (response.data as any).data.url;
-
-        console.log("presignedUrl", presignedUrl);
 
         // presigned URL로 직접 업로드 (헤더 없이)
         const uploadResponse = await fetch(presignedUrl, {
@@ -41,13 +37,9 @@ const ThumbnailBox = ({ thumbnail, onChange }: Props) => {
           },
         });
 
-        console.log("uploadResponse", uploadResponse);
-
         if (!uploadResponse.ok) {
           throw new Error(`Upload failed: ${uploadResponse.statusText}`);
         }
-
-        console.log("Upload successful");
 
         const fileUrl = URL.createObjectURL(file);
         setUploadedImage(fileUrl);

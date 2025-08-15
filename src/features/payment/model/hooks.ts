@@ -49,8 +49,6 @@ export const usePayment = () => {
       setCurrentStep("creating-order");
       const orderResponse = await createOrderMutation(orderData);
 
-      console.log("orderResponse", orderResponse);
-
       // 2. 결제 준비
       setCurrentStep("preparing-payment");
       const paymentPrepareData = {
@@ -58,11 +56,7 @@ export const usePayment = () => {
         userIdx: user?.userIdx,
       };
 
-      console.log("paymentPrepareData", paymentPrepareData);
-
       const prepareResponse = await preparePaymentMutation(paymentPrepareData);
-
-      console.log("prepareResponse", prepareResponse);
 
       const prepareData = {
         ...prepareResponse,
@@ -89,8 +83,6 @@ export const usePayment = () => {
         return;
       }
 
-      console.log("prepareData", prepareData);
-
       const returnUrl = `https://api.everyonesnap.com${process.env.NEXT_PUBLIC_NICEPAY_RETURN_URL}`;
 
       const paymentParams = {
@@ -104,8 +96,6 @@ export const usePayment = () => {
           reject(new Error(result.errorMsg || "결제 오류가 발생했습니다."));
         },
       };
-
-      console.log("paymentParams", paymentParams);
 
       // 결제창 호출
       window.AUTHNICE.requestPay(paymentParams);

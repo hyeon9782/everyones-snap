@@ -22,8 +22,6 @@ const PaymentPage = () => {
 
   const plan = plans?.find((plan) => plan.planIdx === Number(planIdx));
 
-  console.log("plan", plan);
-
   const { processPayment, isLoading } = usePayment();
 
   const handlePayment = () => {

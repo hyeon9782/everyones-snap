@@ -16,8 +16,6 @@ const PaymentHistoryCard = ({ order }: { order: Order }) => {
         reason: "단순변심",
       });
 
-      console.log("response", response);
-
       if (response.success) {
         alert("취소되었습니다.");
       } else {

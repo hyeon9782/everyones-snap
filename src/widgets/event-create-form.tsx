@@ -90,7 +90,6 @@ const EventCreateForm = ({ initialEvent, planIdx }: Props) => {
           qrImageUrl: initialEvent?.qrImageUrl || "",
         };
         const response = await updateEvent(eventData, initialEvent?.eventIdx);
-        console.log("response", response);
       } else {
         const eventData = {
           ...event,
@@ -98,11 +97,10 @@ const EventCreateForm = ({ initialEvent, planIdx }: Props) => {
           hostUserIdx: user?.userIdx || 0,
         };
         const response = await createEvent(eventData);
-        console.log("response", response);
       }
       router.push(`/host/${user?.userIdx}`);
     } catch (error) {
-      console.log("error", error);
+      console.error("error", error);
       alert("이벤트 등록에 실패했습니다.");
     }
   };

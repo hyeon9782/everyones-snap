@@ -93,8 +93,6 @@ const FullscreenViewer = ({
 
   if (photos.length === 0) return null;
 
-  console.log("photos", photos);
-
   const currentOriginalIndex = getOriginalIndex(current);
 
   return (
