@@ -7,7 +7,19 @@ import FullscreenViewer from "@/features/photo-viewer/ui/fullscreen-viewer";
 import { cn } from "@/shared/lib/utils";
 import { usePhotoViewerStore } from "@/features/photo-viewer/model/store";
 
-const PhotoGalleryGrid = ({ photos }: { photos: Photo[] }) => {
+interface PhotoGalleryGridProps {
+  photos: Photo[];
+  hasNextPage?: boolean;
+  isFetchingNextPage?: boolean;
+  fetchNextPage?: () => void;
+}
+
+const PhotoGalleryGrid = ({
+  photos,
+  hasNextPage,
+  isFetchingNextPage,
+  fetchNextPage,
+}: PhotoGalleryGridProps) => {
   const { viewMode } = usePhotoViewerStore();
 
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(
@@ -49,25 +61,32 @@ const PhotoGalleryGrid = ({ photos }: { photos: Photo[] }) => {
       case "grid":
         return "flex flex-col gap-1";
       case "list":
-        return "grid grid-cols-2 gap-1";
+        return "flex flex-wrap gap-1"; // Flexbox 사용
       case "grid_on":
-        return "grid grid-cols-3 gap-1";
+        return "flex flex-wrap gap-1"; // Flexbox 사용
       default:
-        return "grid grid-cols-1 gap-1";
+        return "flex flex-col gap-1";
     }
   };
 
-  // viewMode에 따른 개별 아이템 클래스 결정
-  const getItemClasses = () => {
+  // viewMode에 따른 개별 아이템 스타일 결정
+  const getItemStyle = () => {
     switch (viewMode) {
-      case "grid":
-        return "aspect-square"; // 세로 스크롤, 원본 비율 유지
       case "list":
-        return "aspect-square"; // 2열은 정사각형 유지
+        return {
+          width: "calc(50% - 2px)", // 2열, gap 1개 (4px)의 절반을 빼줌
+          aspectRatio: "1 / 1", // 정사각형
+        };
       case "grid_on":
-        return ""; // 3열은 원본 비율 유지하되 높이 제한
+        return {
+          width: "calc(33.333% - 2.67px)", // 3열, gap 2개 (8px)를 3으로 나눈 값
+          aspectRatio: "1 / 1", // 정사각형
+        };
       default:
-        return "aspect-square";
+        return {
+          width: "100%",
+          aspectRatio: "1 / 1",
+        };
     }
   };
 
@@ -75,11 +94,15 @@ const PhotoGalleryGrid = ({ photos }: { photos: Photo[] }) => {
     <>
       <div className={cn("min-h-screen px-4 py-5", getContainerClasses())}>
         {photos.map((photo, index) => (
-          <div key={`${photo.fileIdx}-${index}`} className={getItemClasses()}>
+          <div
+            key={`${photo.fileIdx}-${index}`}
+            style={getItemStyle()}
+            className="flex-shrink-0"
+          >
             <PhotoCard
               photo={photo}
               onClick={(e) => handlePhotoClick(photo, index, e)}
-              className={cn(viewMode === "grid_on" && "max-h-40 object-cover")}
+              className="w-full h-full"
             />
           </div>
         ))}
@@ -91,6 +114,9 @@ const PhotoGalleryGrid = ({ photos }: { photos: Photo[] }) => {
         isOpen={isViewerOpen}
         onClose={handleCloseViewer}
         initialPosition={initialPosition}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        fetchNextPage={fetchNextPage}
       />
     </>
   );

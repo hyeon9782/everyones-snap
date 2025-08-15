@@ -105,7 +105,12 @@ const GalleryPage = ({ params }: { params: Promise<{ qrToken: string }> }) => {
   return (
     <div>
       <GalleryToolbar eventIdx={Number(eventData?.eventIdx)} />
-      <PhotoGalleryGrid photos={allPhotos} />
+      <PhotoGalleryGrid
+        photos={allPhotos}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        fetchNextPage={fetchNextPage}
+      />
 
       {/* 로딩 인디케이터 */}
       {isFetchingNextPage && (

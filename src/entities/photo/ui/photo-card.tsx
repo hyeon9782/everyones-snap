@@ -63,10 +63,8 @@ const PhotoCard = ({
         <video
           src={photo.url}
           className={cn(
-            "transition-transform hover:scale-105",
-            width && height ? "" : "w-full h-full object-cover"
+            "w-full h-full object-cover transition-transform hover:scale-105"
           )}
-          style={width && height ? { width, height } : undefined}
           controls={false}
           muted
           loop
@@ -91,7 +89,7 @@ const PhotoCard = ({
           alt={photo.mediaType}
           width={width}
           height={height}
-          className="transition-transform hover:scale-105"
+          className="w-full h-full object-cover transition-transform hover:scale-105"
         />
       ) : (
         <Image
@@ -109,7 +107,7 @@ const PhotoCard = ({
           alt={photo.mediaType}
           width={width}
           height={height}
-          className="transition-transform hover:scale-105"
+          className="w-full h-full object-cover transition-transform hover:scale-105"
         />
       ) : (
         <Image
@@ -125,9 +123,9 @@ const PhotoCard = ({
   return (
     <div
       className={cn(
-        "relative w-full h-full cursor-pointer overflow-hidden",
+        "relative w-full h-full cursor-pointer overflow-hidden rounded-lg", // rounded-lg 추가로 더 예쁘게
         className,
-        selectedPhotos.includes(photo) && "border-2 border-blue-500"
+        selectedPhotos.includes(photo) && "ring-2 ring-blue-500 ring-offset-2" // border 대신 ring 사용
       )}
       onClick={handleClick}
     >
