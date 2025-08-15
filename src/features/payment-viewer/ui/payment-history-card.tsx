@@ -35,11 +35,11 @@ const PaymentHistoryCard = ({ order }: { order: Order }) => {
       <div className="flex flex-col gap-4">
         <div className="flex gap-3">
           <span className="text-[#344054] font-semibold text-[18px]">
-            {dayjs(order.createDt).format("YYYY.MM.DD")} 결제
+            {dayjs(
+              order.status === "paid" ? order.createDt : order.updateDt
+            ).format("YYYY.MM.DD")}{" "}
+            {order.status === "paid" ? "결제완료" : "취소완료"}
           </span>
-          {/* <span className="text-[#667085] font-medium text-[18px]">
-            {order.orderId}
-          </span> */}
         </div>
         <hr />
         <div className="flex justify-between items-center">
@@ -80,20 +80,16 @@ const PaymentHistoryCard = ({ order }: { order: Order }) => {
             {order.amount.toLocaleString()}원
           </span>
         </div>
-        {/* <div className="flex justify-between items-center">
-          <span className="text-[#667085] font-medium text-[16px]">
-            신한(1002-010-555555)
-          </span>
-          <span className="text-[16px] font-medium text-[#667085]">일시불</span>
-        </div> */}
       </div>
       <div className="flex gap-3">
-        <Button
-          onClick={handleCancel}
-          className="h-[48px] flex-1 bg-[#E6F3FF] text-[#344054] text-[16px] font-medium"
-        >
-          결제 취소
-        </Button>
+        {order.status === "paid" && (
+          <Button
+            onClick={handleCancel}
+            className="h-[48px] flex-1 bg-[#E6F3FF] text-[#344054] text-[16px] font-medium"
+          >
+            결제 취소
+          </Button>
+        )}
         <Button
           onClick={handleContact}
           className="h-[48px] flex-1 bg-[#F1F5F9] text-[#344054] text-[16px] font-medium"

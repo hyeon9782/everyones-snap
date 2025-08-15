@@ -240,25 +240,29 @@ const GalleryToolbar = ({ eventIdx }: { eventIdx: number }) => {
         <div className="flex items-center gap-2">
           <GridTypeTabs />
           <GalleryFilterDrawer />
-          <Button
-            size="icon"
-            className="w-[36px] h-[36px] rounded-full shadow-none bg-[#F2F2F7]"
-            onClick={handleBookmark}
-          >
-            <Bookmark
-              className={cn(
-                "text-[#344054]",
-                bookmarked === "y" ? "fill-[#344054]" : ""
-              )}
-            />
-          </Button>
-          <Button
-            size="sm"
-            className="w-[44px] h-[35px] p-2 rounded-full shadow-none bg-[#F2F2F7] text-[#344054] text-[16px] font-semibold "
-            onClick={toggleSelect}
-          >
-            선택
-          </Button>
+          {user?.userIdx && (
+            <>
+              <Button
+                size="icon"
+                className="w-[36px] h-[36px] rounded-full shadow-none bg-[#F2F2F7]"
+                onClick={handleBookmark}
+              >
+                <Bookmark
+                  className={cn(
+                    "text-[#344054]",
+                    bookmarked === "y" ? "fill-[#344054]" : ""
+                  )}
+                />
+              </Button>
+              <Button
+                size="sm"
+                className="w-[44px] h-[35px] p-2 rounded-full shadow-none bg-[#F2F2F7] text-[#344054] text-[16px] font-semibold "
+                onClick={toggleSelect}
+              >
+                선택
+              </Button>
+            </>
+          )}
         </div>
       ) : (
         <Button

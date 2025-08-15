@@ -1,3 +1,6 @@
+"use client";
+
+import { useGuestRegistStore } from "@/features/guest-regist/model/store";
 import EventMorePopup from "./event-more-popup";
 import EventShareDrawer from "./event-share-drawer";
 import { Event, PlanUsage } from "@/features/event-viewer/model/types";
@@ -12,6 +15,8 @@ type Props = {
 };
 
 const EventButtonBox = ({ isHost, event, planUsage }: Props) => {
+  const { guest } = useGuestRegistStore();
+
   return (
     <div>
       {isHost ? (
@@ -52,7 +57,7 @@ const EventButtonBox = ({ isHost, event, planUsage }: Props) => {
             <span className="text-[16px] font-medium">갤러리 보기</span>
           </Link>
           <Link
-            href={`/guestbook/${event.eventIdx}`}
+            href={`/guestbook/guest/${event.eventIdx}?guestName=${guest?.name}`}
             className="flex-1 flex gap-2 px-4 items-center justify-center rounded-lg bg-[#F2F2F7] text-black  h-[48px] whitespace-nowrap"
           >
             <Image

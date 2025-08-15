@@ -3,7 +3,6 @@
 import { useUserStore } from "@/features/login/model/store";
 import { getOrders } from "@/features/payment-viewer/api/api";
 import PaymentHistoryCard from "@/features/payment-viewer/ui/payment-history-card";
-import { useApiQuery } from "@/shared/lib";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -14,13 +13,15 @@ const PaymentHistoryPage = () => {
   const { user } = useUserStore();
 
   const { data: orders } = useQuery({
-    queryKey: ["orders"],
+    queryKey: ["orders", user?.userIdx],
     queryFn: () => getOrders(user?.userIdx ?? 0),
     enabled: !!user?.userIdx,
   });
 
+  console.log("orders", orders);
+
   const successOrders = orders?.filter((order) => order.status === "paid");
-  const cancelOrders = orders?.filter((order) => order.status === "cancel");
+  const cancelOrders = orders?.filter((order) => order.status === "cancelled");
 
   return (
     <div className="bg-[#F1F5F9] min-h-screen flex flex-col gap-5 px-4 py-10">
@@ -60,9 +61,18 @@ const PaymentHistoryPage = () => {
         </div>
       </div>
       <div className="flex flex-col gap-4">
-        {orders?.map((order) => (
-          <PaymentHistoryCard key={order.orderIdx} order={order} />
-        ))}
+        {type === "all" &&
+          orders?.map((order) => (
+            <PaymentHistoryCard key={order.orderIdx} order={order} />
+          ))}
+        {type === "success" &&
+          successOrders?.map((order) => (
+            <PaymentHistoryCard key={order.orderIdx} order={order} />
+          ))}
+        {type === "failure" &&
+          cancelOrders?.map((order) => (
+            <PaymentHistoryCard key={order.orderIdx} order={order} />
+          ))}
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const GuestbookPage = async ({
+const GuestbookHostPage = async ({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -33,4 +33,4 @@ const GuestbookPage = async ({
   );
 };
 
-export default GuestbookPage;
+export default GuestbookHostPage;

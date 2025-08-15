@@ -10,7 +10,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/shared/ui/carousel";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import BookmarkButton from "./bookmark-button";
 import DownloadButtonWithToast from "@/features/photo-download/ui/download-button-with-toast";
 import FileMorePopup from "./file-more-popup";
@@ -38,6 +38,29 @@ const FullscreenViewer = ({
   const [api, setApi] = useState<any>();
   const [current, setCurrent] = useState(0); // 항상 0부터 시작
   const [isReady, setIsReady] = useState(false);
+  const videoRefsRef = useRef<{ [key: number]: HTMLVideoElement }>({});
+
+  // 미디어 타입 확인 함수들
+  const isVideo = (mediaType: string, url?: string) => {
+    return (
+      mediaType.toLowerCase().startsWith("video/") ||
+      mediaType.toLowerCase() === "video" ||
+      (url &&
+        ["mp4", "webm", "ogg", "mov", "avi"].some((ext) =>
+          url.toLowerCase().includes(`.${ext}`)
+        ))
+    );
+  };
+
+  const isImage = (mediaType: string, url?: string) => {
+    return (
+      mediaType.toLowerCase().startsWith("image/") ||
+      (url &&
+        ["jpg", "jpeg", "png", "gif", "webp", "svg"].some((ext) =>
+          url.toLowerCase().includes(`.${ext}`)
+        ))
+    );
+  };
 
   // 선택된 이미지가 첫 번째로 오도록 배열 재정렬
   const reorderedPhotos = useMemo(() => {
@@ -75,25 +98,109 @@ const FullscreenViewer = ({
     setIsReady(true);
 
     api.on("select", () => {
-      setCurrent(api.selectedScrollSnap());
+      const newCurrent = api.selectedScrollSnap();
+
+      // 이전 슬라이드의 비디오 일시정지
+      if (videoRefsRef.current[current]) {
+        videoRefsRef.current[current].pause();
+      }
+
+      setCurrent(newCurrent);
     });
 
     return () => {
       api.off("select");
     };
-  }, [api]);
+  }, [api, current]);
 
   // 컴포넌트가 열릴 때마다 초기화
   useEffect(() => {
     if (isOpen) {
       setIsReady(false);
       setCurrent(0);
+      videoRefsRef.current = {};
+    } else {
+      // 뷰어가 닫힐 때 모든 비디오 일시정지
+      Object.values(videoRefsRef.current).forEach((video) => {
+        if (video) {
+          video.pause();
+        }
+      });
     }
   }, [isOpen]);
+
+  // ESC 키로 닫기
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyPress);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [isOpen, onClose]);
 
   if (photos.length === 0) return null;
 
   const currentOriginalIndex = getOriginalIndex(current);
+  const currentPhoto = photos[currentOriginalIndex];
+
+  // 비디오 ref 콜백 함수
+  const setVideoRef = useCallback((index: number) => {
+    return (el: HTMLVideoElement | null) => {
+      if (el) {
+        videoRefsRef.current[index] = el;
+      } else {
+        delete videoRefsRef.current[index];
+      }
+    };
+  }, []);
+
+  // 미디어 렌더링 함수
+  const renderMedia = (photo: Photo, index: number) => {
+    if (isVideo(photo.mediaType, photo.url)) {
+      return (
+        <div className="w-full h-screen flex items-center justify-center">
+          <video
+            ref={setVideoRef(index)}
+            src={photo.url}
+            className="max-w-full max-h-full object-contain"
+            controls
+            autoPlay={index === current} // 현재 슬라이드일 때만 자동 재생
+            muted={false} // 풀스크린에서는 음소거 해제
+            loop={false}
+            playsInline
+            preload={index === current ? "auto" : "metadata"}
+            style={{ maxHeight: "100vh", maxWidth: "100vw" }}
+            onLoadedData={() => {
+              // 현재 슬라이드가 아닌 비디오는 일시정지
+              if (index !== current && videoRefsRef.current[index]) {
+                videoRefsRef.current[index].pause();
+              }
+            }}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <Image
+          src={photo.url}
+          alt={photo.mediaType}
+          fill
+          sizes="100vw"
+          className="object-contain"
+          priority={index === 0} // 첫 번째 이미지만 priority
+          placeholder="empty" // placeholder 제거로 더 빠른 로딩
+        />
+      );
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -183,15 +290,7 @@ const FullscreenViewer = ({
                     >
                       <div className="relative w-full h-full flex items-center justify-center min-h-screen">
                         <div className="relative w-full h-full min-h-screen">
-                          <Image
-                            src={photo.url}
-                            alt={photo.mediaType}
-                            fill
-                            sizes="100vw"
-                            className="object-contain"
-                            priority={index === 0} // 첫 번째 이미지만 priority
-                            placeholder="empty" // placeholder 제거로 더 빠른 로딩
-                          />
+                          {renderMedia(photo, index)}
                         </div>
                       </div>
                     </CarouselItem>
@@ -210,30 +309,46 @@ const FullscreenViewer = ({
               ✕
             </button>
 
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 bg-black/50 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
+              {isVideo(currentPhoto.mediaType, currentPhoto.url) && (
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-4 h-4"
+                >
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              )}
               {currentOriginalIndex + 1} of {photos.length}
             </div>
+
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-5">
               <BookmarkButton
-                eventIdx={photos[currentOriginalIndex].eventIdx}
-                fileIdx={photos[currentOriginalIndex].fileIdx}
-                userIdx={photos[currentOriginalIndex].userIdx}
-                initialBookmarked={photos[currentOriginalIndex].isBookmarked}
+                eventIdx={currentPhoto.eventIdx}
+                fileIdx={currentPhoto.fileIdx}
+                userIdx={currentPhoto.userIdx}
+                initialBookmarked={currentPhoto.isBookmarked}
               />
               <DownloadButtonWithToast
-                eventIdx={photos[currentOriginalIndex].eventIdx}
-                fileIdxs={[photos[currentOriginalIndex].fileIdx]}
-                fileName={`photo_${photos[currentOriginalIndex].fileIdx}.${
-                  photos[currentOriginalIndex].mediaType === "video"
+                eventIdx={currentPhoto.eventIdx}
+                fileIdxs={[currentPhoto.fileIdx]}
+                fileName={`${
+                  isVideo(currentPhoto.mediaType, currentPhoto.url)
+                    ? "video"
+                    : "photo"
+                }_${currentPhoto.fileIdx}.${
+                  isVideo(currentPhoto.mediaType, currentPhoto.url)
                     ? "mp4"
                     : "jpg"
                 }`}
               />
               <FileMorePopup
-                userIdx={photos[currentOriginalIndex].userIdx}
-                guestIdx={photos[currentOriginalIndex].guestIdx}
-                eventIdx={photos[currentOriginalIndex].eventIdx}
-                fileIdx={photos[currentOriginalIndex].fileIdx}
+                userIdx={currentPhoto.userIdx}
+                guestIdx={currentPhoto.guestIdx}
+                eventIdx={currentPhoto.eventIdx}
+                fileIdx={currentPhoto.fileIdx}
               />
             </div>
           </motion.div>

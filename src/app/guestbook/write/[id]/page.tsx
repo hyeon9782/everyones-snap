@@ -1,4 +1,3 @@
-import GuestbookFooter from "@/features/guestbook-write/ui/guestbook-footer";
 import GuestbookForm from "@/features/guestbook-write/ui/guestbook-form";
 
 const GuestbookEditPage = async ({
@@ -15,8 +14,7 @@ const GuestbookEditPage = async ({
           방명록 수정
         </h1>
       </div>
-      <GuestbookForm />
-      <GuestbookFooter />
+      <GuestbookForm eventIdx={Number(id)} />
     </div>
   );
 };

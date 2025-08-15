@@ -53,7 +53,7 @@ const PaymentSuccessPage = () => {
         <div className="flex justify-between items-center">
           <span className="text-[#667085] font-medium text-[16px]">이메일</span>
           <span className="text-[16px] font-medium text-[#344054]">
-            {user?.email}
+            {order?.email}
           </span>
         </div>
         <div className="flex justify-between items-center">

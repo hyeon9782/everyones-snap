@@ -18,6 +18,7 @@ import UploadController from "./upload-controller";
 import FileItem from "./file-item";
 import { UplaodStatus, UploadPhoto } from "../model/types";
 import Link from "next/link";
+import { useGuestRegistStore } from "@/features/guest-regist/model/store";
 
 interface UploadFile {
   id: string;
@@ -34,6 +35,8 @@ const UploadDrawer = ({ eventIdx }: { eventIdx: number }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { user } = useUserStore();
+
+  const { guest } = useGuestRegistStore();
 
   const handleFileSelect = useCallback((selectedFiles: FileList | null) => {
     if (!selectedFiles) return;
@@ -144,7 +147,7 @@ const UploadDrawer = ({ eventIdx }: { eventIdx: number }) => {
         const photoData: UploadPhoto[] = completedFiles.map((file) => ({
           eventIdx: eventIdx, // 실제 eventIdx로 변경 필요
           userIdx: user?.userIdx || 0, // 실제 userIdx로 변경 필요
-          guestIdx: user?.userIdx ? 0 : 100, // 실제 guestIdx로 변경 필요 (optional일 수 있음)
+          guestIdx: guest?.guestIdx || 0, // 실제 guestIdx로 변경 필요 (optional일 수 있음)
           mediaType: file.file.type.startsWith("image/") ? "image" : "video",
           fileName: file.file.name,
           type: file.file.type,

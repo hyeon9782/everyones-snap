@@ -4,8 +4,11 @@ import { cn } from "@/shared/lib";
 import { Guestbook } from "../model/types";
 import dayjs from "dayjs";
 import GuestbookMorePopup from "./guestbook-more-popup";
+import { useGuestRegistStore } from "@/features/guest-regist/model/store";
 
 const GuestbookItem = ({ guestbook }: { guestbook: Guestbook }) => {
+  const { guest } = useGuestRegistStore();
+
   return (
     <div
       className={cn(
@@ -18,7 +21,10 @@ const GuestbookItem = ({ guestbook }: { guestbook: Guestbook }) => {
           <p>{dayjs(guestbook.createDt).format("YYYY.MM.DD")}</p>
           <p>{guestbook.guestName}</p>
         </div>
-        <GuestbookMorePopup visitorNoteIdx={guestbook.visitorNoteIdx} />
+        <GuestbookMorePopup
+          visitorNoteIdx={guestbook.visitorNoteIdx}
+          isGuest={guestbook.guestName === guest?.name}
+        />
       </div>
     </div>
   );
