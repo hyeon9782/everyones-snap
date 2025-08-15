@@ -19,16 +19,25 @@ import dayjs from "dayjs";
 import { parseTime } from "@/features/event-create/utils/event.utils";
 import { useUserStore } from "@/features/login/model/store";
 import { createEvent } from "@/features/event-create/api/event-create.api";
+import { Event } from "@/features/event-viewer/model/types";
 
 type Props = {
-  initialEvent?: UpdateEvent;
+  initialEvent?: Event;
+  planIdx?: number;
 };
 
-const EventCreateForm = ({ initialEvent }: Props) => {
+const EventCreateForm = ({ initialEvent, planIdx }: Props) => {
   const router = useRouter();
 
-  const [date, setDate] = useState<string>(dayjs().format("YYYY.MM.DD"));
-  const [time, setTime] = useState<string>(dayjs().format("HH:mm"));
+  const initialDate = initialEvent?.eventDt
+    ? dayjs(initialEvent.eventDt).format("YYYY.MM.DD")
+    : dayjs().format("YYYY.MM.DD");
+  const initialTime = initialEvent?.eventDt
+    ? dayjs(initialEvent.eventDt).format("HH:mm")
+    : dayjs().format("HH:mm");
+
+  const [date, setDate] = useState<string>(initialDate);
+  const [time, setTime] = useState<string>(initialTime);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
 
@@ -52,32 +61,42 @@ const EventCreateForm = ({ initialEvent }: Props) => {
     }
   };
 
-  const [event, setEvent] = useState<CreateEvent | UpdateEvent>(
-    initialEvent || {
-      eventTitle: "",
-      eventCategoryIdx: 0,
-      hostUserIdx: 0,
-      eventDt: "",
-      location: "",
-      eventIntro: "",
-      mainImageUrl: "",
-      isGalleryPublic: "y",
-    }
-  );
+  const [event, setEvent] = useState<CreateEvent | UpdateEvent>({
+    eventTitle: initialEvent?.eventTitle || "",
+    eventCategoryIdx: initialEvent?.eventCategoryIdx || 0,
+    eventDt: initialEvent?.eventDt || "",
+    location: initialEvent?.location || "",
+    eventIntro: initialEvent?.eventIntro || "",
+    mainImageUrl: initialEvent?.mainImageUrl || "",
+    isGalleryPublic: initialEvent?.isGalleryPublic || "y",
+  });
+
+  const createISODateTime = (date: string, time: string) => {
+    // "2024.08.15" -> "2024-08-15" 형식으로 변환
+    const formattedDate = date.replace(/\./g, "-");
+    // ISO 8601 형식으로 변환: YYYY-MM-DDTHH:mm:ss.sssZ
+    return dayjs(`${formattedDate} ${time}`, "YYYY-MM-DD HH:mm").toISOString();
+  };
 
   const handleSubmit = async () => {
-    const eventData = {
-      ...event,
-      eventDt: `${date} ${time}`,
-      hostUserIdx: user?.userIdx || 0,
-    };
-
     try {
-      console.log("event", eventData);
       if (initialEvent) {
+        const eventData = {
+          ...event,
+          eventDt: createISODateTime(date, time),
+          planIdx,
+          qrToken: initialEvent?.qrToken || "",
+          shortUrl: initialEvent?.shortUrl || "",
+          qrImageUrl: initialEvent?.qrImageUrl || "",
+        };
         const response = await updateEvent(eventData, initialEvent?.eventIdx);
         console.log("response", response);
       } else {
+        const eventData = {
+          ...event,
+          eventDt: createISODateTime(date, time),
+          hostUserIdx: user?.userIdx || 0,
+        };
         const response = await createEvent(eventData);
         console.log("response", response);
       }
@@ -124,6 +143,7 @@ const EventCreateForm = ({ initialEvent }: Props) => {
             ]}
             placeholder="카테고리를 선택해주세요."
             className="min-w-[180px]"
+            value={event.eventCategoryIdx.toString()}
             onChange={(value) => {
               setEvent({ ...event, eventCategoryIdx: Number(value) });
             }}

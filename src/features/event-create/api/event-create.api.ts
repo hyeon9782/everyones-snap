@@ -3,7 +3,7 @@ import { Event } from "@/features/event-viewer/model/types";
 export type CreateEvent = {
   eventTitle: string;
   eventCategoryIdx: number;
-  hostUserIdx: number;
+  hostUserIdx?: number;
   eventDt: string;
   location: string;
   eventIntro: string;

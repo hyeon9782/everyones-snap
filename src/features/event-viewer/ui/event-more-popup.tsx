@@ -14,17 +14,19 @@ import {
 import Link from "next/link";
 import EventDetailDrawer from "./event-detail-drawer";
 import { Event, PlanUsage } from "@/features/event-viewer/model/types";
+import { useUserStore } from "@/features/login/model/store";
 
 type Props = {
-  eventId: number;
   event: Event;
   planUsage: PlanUsage;
 };
 
-const EventMorePopup = ({ eventId, event, planUsage }: Props) => {
+const EventMorePopup = ({ event, planUsage }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   console.log(event);
+
+  const { user } = useUserStore();
 
   return (
     <>
@@ -35,8 +37,8 @@ const EventMorePopup = ({ eventId, event, planUsage }: Props) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[160px]">
-          <DropdownMenuItem>
-            <Link href={`/event/edit/${eventId}`}>편집</Link>
+          <DropdownMenuItem asChild>
+            <Link href={`/event/edit/${user?.userIdx}`}>편집</Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsOpen(true)}>
             상세 정보

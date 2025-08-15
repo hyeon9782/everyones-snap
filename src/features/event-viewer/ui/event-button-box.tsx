@@ -35,11 +35,7 @@ const EventButtonBox = ({ isHost, event, planUsage }: Props) => {
             갤러리
           </Link>
 
-          <EventMorePopup
-            eventId={event.eventIdx}
-            event={event}
-            planUsage={planUsage}
-          />
+          <EventMorePopup event={event} planUsage={planUsage} />
         </div>
       ) : (
         <div className="flex gap-3">
