@@ -1,6 +1,6 @@
 import { httpClient } from "@/shared/api/base-client";
 import { useMutation } from "@tanstack/react-query";
-import { GuestbookWriteRequest } from "../model/types";
+import { GuestbookUpdateRequest, GuestbookWriteRequest } from "../model/types";
 
 export const writeGuestbook = async (payload: GuestbookWriteRequest) => {
   return httpClient
@@ -8,17 +8,12 @@ export const writeGuestbook = async (payload: GuestbookWriteRequest) => {
     .then((res) => (res.data as any).data);
 };
 
-export const updateGuestbook = async ({
-  visitorNoteIdx,
-  content,
-}: {
-  visitorNoteIdx: number;
-  content: string;
-}) => {
+export const updateGuestbook = async (
+  visitorNoteIdx: number,
+  payload: GuestbookUpdateRequest
+) => {
   return httpClient
-    .put(`/v1/visitor-notes/${visitorNoteIdx}`, {
-      content,
-    })
+    .put(`/v1/visitor-notes/${visitorNoteIdx}`, payload)
     .then((res) => (res.data as any).data);
 };
 

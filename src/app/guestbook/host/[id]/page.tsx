@@ -24,6 +24,9 @@ const GuestbookHostPage = async ({
           <Image src="/images/edit.svg" alt="edit" width={15.81} height={15} />
         </Link>
       </div>
+      <span className="text-[16px] font-semibold text-[#667085]">
+        {guestbook.length}개의 메시지가 있어요
+      </span>
       <div className="flex flex-col gap-5">
         {guestbook.map((guestbook) => (
           <GuestbookItem key={guestbook.visitorNoteIdx} guestbook={guestbook} />

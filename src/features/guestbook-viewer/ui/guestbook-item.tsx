@@ -23,6 +23,7 @@ const GuestbookItem = ({ guestbook }: { guestbook: Guestbook }) => {
         </div>
         <GuestbookMorePopup
           visitorNoteIdx={guestbook.visitorNoteIdx}
+          eventIdx={guestbook.eventIdx}
           isGuest={guestbook.guestName === guest?.name}
         />
       </div>

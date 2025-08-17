@@ -15,13 +15,13 @@ import Link from "next/link";
 const GuestbookMorePopup = ({
   visitorNoteIdx,
   isGuest,
+  eventIdx,
 }: {
   visitorNoteIdx: number;
   isGuest: boolean;
+  eventIdx: number;
 }) => {
   const { mutateAsync: deleteGuestbook } = useDeleteGuestbookMutation();
-
-  const queryClient = useQueryClient();
 
   const handleDeleteGuestbook = async () => {
     const confirm = window.confirm("메시지를 삭제할까요?");
@@ -42,7 +42,11 @@ const GuestbookMorePopup = ({
       <DropdownMenuContent align="end" className="w-[160px]">
         {isGuest && (
           <DropdownMenuItem asChild>
-            <Link href={`/guestbook/guest/${visitorNoteIdx}`}>편집</Link>
+            <Link
+              href={`/guestbook/write/${visitorNoteIdx}?eventIdx=${eventIdx}`}
+            >
+              편집
+            </Link>
           </DropdownMenuItem>
         )}
         <DropdownMenuItem onSelect={handleDeleteGuestbook}>

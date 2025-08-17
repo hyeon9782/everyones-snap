@@ -5,20 +5,24 @@ import BackgroundSelector from "./background-selector";
 import { Textarea } from "@/shared/ui/textarea";
 import BasicSelect from "@/shared/ui/basic-select";
 
-import { useWriteGuestbookMutation } from "../api/api";
+import { updateGuestbook, useWriteGuestbookMutation } from "../api/api";
 import { useGuestRegistStore } from "@/features/guest-regist/model/store";
 import { Button } from "@/shared/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const GuestbookForm = ({
-  initialBackground = "from-[#FDD7DE] to-[#C8E1FD]",
-  initialFont = "font-myeongjo",
+  initialBackground,
+  initialFont,
   eventIdx,
+  visitorNoteIdx,
+  initialContent,
 }: {
   initialBackground?: string;
   initialFont?: string;
   eventIdx: number;
+  visitorNoteIdx?: number;
+  initialContent?: string;
 }) => {
   const { mutateAsync: writeGuestbook, isPending } =
     useWriteGuestbookMutation();
@@ -26,22 +30,33 @@ const GuestbookForm = ({
   const { guest } = useGuestRegistStore();
   const router = useRouter();
 
-  const [background, setBackground] = useState<string>(initialBackground);
-  const [font, setFont] = useState<string>(initialFont);
-  const [content, setContent] = useState<string>("");
+  const [background, setBackground] = useState<string>(
+    initialBackground ?? "from-[#FDD7DE] to-[#C8E1FD]"
+  );
+  const [font, setFont] = useState<string>(initialFont ?? "font-myeongjo");
+  const [content, setContent] = useState<string>(initialContent ?? "");
 
   const handleWriteGuestbook = async () => {
     try {
-      const res = await writeGuestbook({
-        eventIdx,
-        guestName: guest?.name ?? "",
-        content,
-        fontColor: "#000000",
-        backgroundColor: background,
-        font,
-      });
+      if (initialContent) {
+        const res = await updateGuestbook(visitorNoteIdx ?? 0, {
+          content,
+          font,
+          backgroundColor: background,
+          fontColor: "#000000",
+        });
+      } else {
+        const res = await writeGuestbook({
+          eventIdx,
+          guestName: guest?.name ?? "",
+          content,
+          fontColor: "#000000",
+          backgroundColor: background,
+          font,
+        });
+      }
 
-      router.push(`/guestbook/${eventIdx}`);
+      router.push(`/guestbook/guest/${eventIdx}?guestName=${guest?.name}`);
     } catch (error) {
       console.error(error);
     }

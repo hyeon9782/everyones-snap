@@ -20,6 +20,10 @@ const GuestbookGuestPage = async ({
     (guestbook) => guestbook.guestName === guestName
   );
 
+  console.log("filteredGuestbook", filteredGuestbook);
+  console.log("guestbook", guestbook);
+  console.log("guestName", guestName);
+
   return (
     <div className="h-screen flex flex-col gap-5 px-4 pt-5">
       <div className="flex justify-between items-center">
@@ -30,6 +34,11 @@ const GuestbookGuestPage = async ({
         >
           <Image src="/images/edit.svg" alt="edit" width={15.81} height={15} />
         </Link>
+      </div>
+      <div>
+        <span className="text-[16px] font-semibold text-[#667085]">
+          내가 작성한 글
+        </span>
       </div>
       <div className="flex flex-col gap-5">
         {filteredGuestbook && <GuestbookItem guestbook={filteredGuestbook} />}

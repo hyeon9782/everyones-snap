@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/shared/ui/button";
-import { overlay } from "overlay-kit";
 
 import React, { useState } from "react";
 import Image from "next/image";
@@ -37,6 +36,9 @@ const EventMorePopup = ({ event, planUsage }: Props) => {
         <DropdownMenuContent align="end" className="w-[160px]">
           <DropdownMenuItem asChild>
             <Link href={`/event/edit/${user?.userIdx}`}>편집</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={`/guestbook/host/${event.eventIdx}`}>방명록</Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsOpen(true)}>
             상세 정보

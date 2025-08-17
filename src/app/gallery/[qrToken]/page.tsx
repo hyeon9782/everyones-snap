@@ -10,13 +10,17 @@ import GalleryToolbar from "@/features/photo-viewer/ui/gallery-toolbar";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { getCookie } from "@/shared/lib/cookie-utils";
 import { usePhotoViewerStore } from "@/features/photo-viewer/model/store";
+import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/features/login/model/store";
 
 const GalleryPage = ({ params }: { params: Promise<{ qrToken: string }> }) => {
   const [qrToken, setQrToken] = useState<string>("");
   const [userIdx, setUserIdx] = useState<number>(0);
   const [isParamsLoaded, setIsParamsLoaded] = useState(false);
   const { initializeBookmarks } = usePhotoViewerStore();
-
+  const router = useRouter();
+  const { user } = useUserStore();
   // 클라이언트에서 파라미터 초기화
   useEffect(() => {
     const initializeParams = async () => {
@@ -130,17 +134,19 @@ const GalleryPage = ({ params }: { params: Promise<{ qrToken: string }> }) => {
       )}
 
       <div className="fixed bottom-0 left-0 right-0 flex justify-center items-center h-[72px] w-full bg-white gap-2 px-4 md:w-[375px] mx-auto">
-        <Button className="w-[48px] h-[48px] bg-[#F1F5F9] rounded-xl">
-          <Image
-            src="/images/download.svg"
-            alt="download"
-            width={13.33}
-            height={13.33}
-          />
+        <Button
+          onClick={() => router.back()}
+          className="w-[48px] h-[48px] bg-[#F1F5F9] rounded-xl"
+        >
+          <ArrowLeft className="text-[#344054] size-5" />
         </Button>
         <UploadDrawer eventIdx={Number(eventData?.eventIdx || 0)} />
         <Link
-          href={`/guestbook/${qrToken}`}
+          href={
+            user?.userIdx
+              ? `/guestbook/host/${eventData?.eventIdx}`
+              : `/guestbook/guest/${eventData?.eventIdx}`
+          }
           className="flex-1 flex items-center justify-center gap-2 bg-[#F1F5F9] rounded-xl h-[48px] text-[16px] font-semibold text-[#344054]"
         >
           <div className="w-[24px] h-[24px] flex items-center justify-center">

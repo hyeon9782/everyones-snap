@@ -20,8 +20,10 @@ export interface GuestbookWriteResponse {
 }
 
 export interface GuestbookUpdateRequest {
-  visitorNoteIdx: number;
   content: string;
+  font: string;
+  backgroundColor: string;
+  fontColor: string;
 }
 
 export interface GuestbookUpdateResponse extends GuestbookWriteResponse {}
