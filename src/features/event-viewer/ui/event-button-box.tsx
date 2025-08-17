@@ -57,7 +57,7 @@ const EventButtonBox = ({ isHost, event, planUsage }: Props) => {
             <span className="text-[16px] font-medium">갤러리 보기</span>
           </Link>
           <Link
-            href={`/guestbook/guest/${event.eventIdx}?guestName=${guest?.name}`}
+            href={`/guestbook/guest/${event.eventIdx}?guestName=${guest?.name}&qrToken=${event.qrToken}`}
             className="flex-1 flex gap-2 px-4 items-center justify-center rounded-lg bg-[#F2F2F7] text-black  h-[48px] whitespace-nowrap"
           >
             <Image

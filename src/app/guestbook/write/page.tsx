@@ -3,9 +3,9 @@ import GuestbookForm from "@/features/guestbook-write/ui/guestbook-form";
 const GuestbookWritePage = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ eventIdx: string }>;
+  searchParams: Promise<{ eventIdx: string; qrToken: string }>;
 }) => {
-  const { eventIdx } = await searchParams;
+  const { eventIdx, qrToken } = await searchParams;
 
   return (
     <div className="h-screen bg-[#F1F5F9] flex flex-col gap-5 px-4 pt-5">
@@ -14,7 +14,7 @@ const GuestbookWritePage = async ({
           방명록 작성
         </h1>
       </div>
-      <GuestbookForm eventIdx={Number(eventIdx)} />
+      <GuestbookForm eventIdx={Number(eventIdx)} qrToken={qrToken} />
     </div>
   );
 };

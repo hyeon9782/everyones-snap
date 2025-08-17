@@ -9,17 +9,19 @@ import {
 } from "@/shared/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { useDeleteGuestbookMutation } from "@/features/guestbook-write/api/api";
-import { useQueryClient } from "@tanstack/react-query";
+
 import Link from "next/link";
 
 const GuestbookMorePopup = ({
   visitorNoteIdx,
   isGuest,
   eventIdx,
+  qrToken,
 }: {
   visitorNoteIdx: number;
   isGuest: boolean;
   eventIdx: number;
+  qrToken: string;
 }) => {
   const { mutateAsync: deleteGuestbook } = useDeleteGuestbookMutation();
 
@@ -43,7 +45,7 @@ const GuestbookMorePopup = ({
         {isGuest && (
           <DropdownMenuItem asChild>
             <Link
-              href={`/guestbook/write/${visitorNoteIdx}?eventIdx=${eventIdx}`}
+              href={`/guestbook/write/${visitorNoteIdx}?eventIdx=${eventIdx}&qrToken=${qrToken}`}
             >
               편집
             </Link>

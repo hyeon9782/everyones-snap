@@ -38,7 +38,11 @@ const EventMorePopup = ({ event, planUsage }: Props) => {
             <Link href={`/event/edit/${user?.userIdx}`}>편집</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href={`/guestbook/host/${event.eventIdx}`}>방명록</Link>
+            <Link
+              href={`/guestbook/host/${event.eventIdx}?qrToken=${event.qrToken}`}
+            >
+              방명록
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsOpen(true)}>
             상세 정보

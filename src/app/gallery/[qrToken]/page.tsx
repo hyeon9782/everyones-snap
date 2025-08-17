@@ -13,6 +13,7 @@ import { usePhotoViewerStore } from "@/features/photo-viewer/model/store";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/features/login/model/store";
+import { useGuestRegistStore } from "@/features/guest-regist/model/store";
 
 const GalleryPage = ({ params }: { params: Promise<{ qrToken: string }> }) => {
   const [qrToken, setQrToken] = useState<string>("");
@@ -21,6 +22,7 @@ const GalleryPage = ({ params }: { params: Promise<{ qrToken: string }> }) => {
   const { initializeBookmarks } = usePhotoViewerStore();
   const router = useRouter();
   const { user } = useUserStore();
+  const { guest } = useGuestRegistStore();
   // 클라이언트에서 파라미터 초기화
   useEffect(() => {
     const initializeParams = async () => {
@@ -144,8 +146,8 @@ const GalleryPage = ({ params }: { params: Promise<{ qrToken: string }> }) => {
         <Link
           href={
             user?.userIdx
-              ? `/guestbook/host/${eventData?.eventIdx}`
-              : `/guestbook/guest/${eventData?.eventIdx}`
+              ? `/guestbook/host/${eventData?.eventIdx}?qrToken=${qrToken}`
+              : `/guestbook/guest/${eventData?.eventIdx}?qrToken=${qrToken}&guestName=${guest?.name}`
           }
           className="flex-1 flex items-center justify-center gap-2 bg-[#F1F5F9] rounded-xl h-[48px] text-[16px] font-semibold text-[#344054]"
         >

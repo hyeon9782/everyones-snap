@@ -6,7 +6,13 @@ import dayjs from "dayjs";
 import GuestbookMorePopup from "./guestbook-more-popup";
 import { useGuestRegistStore } from "@/features/guest-regist/model/store";
 
-const GuestbookItem = ({ guestbook }: { guestbook: Guestbook }) => {
+const GuestbookItem = ({
+  guestbook,
+  qrToken,
+}: {
+  guestbook: Guestbook;
+  qrToken: string;
+}) => {
   const { guest } = useGuestRegistStore();
 
   return (
@@ -25,6 +31,7 @@ const GuestbookItem = ({ guestbook }: { guestbook: Guestbook }) => {
           visitorNoteIdx={guestbook.visitorNoteIdx}
           eventIdx={guestbook.eventIdx}
           isGuest={guestbook.guestName === guest?.name}
+          qrToken={qrToken}
         />
       </div>
     </div>

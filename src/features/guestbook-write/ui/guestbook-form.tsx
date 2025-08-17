@@ -17,12 +17,14 @@ const GuestbookForm = ({
   eventIdx,
   visitorNoteIdx,
   initialContent,
+  qrToken,
 }: {
   initialBackground?: string;
   initialFont?: string;
   eventIdx: number;
   visitorNoteIdx?: number;
   initialContent?: string;
+  qrToken: string;
 }) => {
   const { mutateAsync: writeGuestbook, isPending } =
     useWriteGuestbookMutation();
@@ -56,7 +58,9 @@ const GuestbookForm = ({
         });
       }
 
-      router.push(`/guestbook/guest/${eventIdx}?guestName=${guest?.name}`);
+      router.push(
+        `/guestbook/guest/${eventIdx}?guestName=${guest?.name}&qrToken=${qrToken}`
+      );
     } catch (error) {
       console.error(error);
     }

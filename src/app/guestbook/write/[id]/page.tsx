@@ -6,10 +6,10 @@ const GuestbookEditPage = async ({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ eventIdx: string }>;
+  searchParams: Promise<{ eventIdx: string; qrToken: string }>;
 }) => {
   const { id } = await params;
-  const { eventIdx } = await searchParams;
+  const { eventIdx, qrToken } = await searchParams;
   const guestbook = await getGuestbookById(Number(id));
 
   console.log("guestbook", guestbook);
@@ -27,6 +27,7 @@ const GuestbookEditPage = async ({
         initialContent={guestbook?.content}
         initialBackground={guestbook?.backgroundColor}
         initialFont={guestbook?.font}
+        qrToken={qrToken}
       />
     </div>
   );
