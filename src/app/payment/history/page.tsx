@@ -6,8 +6,10 @@ import PaymentHistoryCard from "@/features/payment-viewer/ui/payment-history-car
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-const PaymentHistoryPage = () => {
+// useSearchParams를 사용하는 컴포넌트를 별도로 분리
+const PaymentHistoryContent = () => {
   const searchParams = useSearchParams();
   const type = searchParams.get("type") || "all";
   const { user } = useUserStore();
@@ -25,42 +27,53 @@ const PaymentHistoryPage = () => {
 
   return (
     <div className="bg-[#F1F5F9] min-h-screen flex flex-col gap-5 px-4 py-10">
-      <div className="flex justify-between items-center">
-        <h1 className="text-[20px] font-semibold text-[#344054]">결제 내역</h1>
-        <div className="flex items-center gap-2 bg-white rounded-full p-0.5">
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <h1 className="text-[28px] font-semibold text-[#344054]">
+            결제 내역
+          </h1>
+          <Link
+            href="/payment"
+            className="text-[16px] font-semibold text-[#359EFF]"
+          >
+            결제하기
+          </Link>
+        </div>
+        <div className="flex gap-2 bg-white rounded-lg p-1">
           <Link
             href="/payment/history?type=all"
-            className={`px-2 py-1.5 rounded-full text-[16px] font-medium ${
+            className={`flex-1 text-center py-3 rounded-lg text-[16px] font-semibold transition-colors ${
               type === "all"
-                ? "bg-[#667085] text-white"
-                : "bg-white text-[#344054]"
+                ? "bg-[#359EFF] text-white"
+                : "text-[#667085] hover:bg-gray-50"
             }`}
           >
             전체
           </Link>
           <Link
             href="/payment/history?type=success"
-            className={`px-2 py-1.5 rounded-full text-[16px] font-medium ${
+            className={`flex-1 text-center py-3 rounded-lg text-[16px] font-semibold transition-colors ${
               type === "success"
-                ? "bg-[#667085] text-white"
-                : "bg-white text-[#344054]"
+                ? "bg-[#359EFF] text-white"
+                : "text-[#667085] hover:bg-gray-50"
             }`}
           >
-            결제
+            결제 완료
           </Link>
           <Link
-            href="/payment/history?type=failure"
-            className={`px-2 py-1.5 rounded-full text-[16px] font-medium ${
-              type === "failure"
-                ? "bg-[#667085] text-white"
-                : "bg-white text-[#344054]"
+            href="/payment/history?type=cancel"
+            className={`flex-1 text-center py-3 rounded-lg text-[16px] font-semibold transition-colors ${
+              type === "cancel"
+                ? "bg-[#359EFF] text-white"
+                : "text-[#667085] hover:bg-gray-50"
             }`}
           >
-            취소
+            결제 취소
           </Link>
         </div>
       </div>
-      <div className="flex flex-col gap-4">
+
+      <div className="flex flex-col gap-3">
         {type === "all" &&
           orders?.map((order) => (
             <PaymentHistoryCard key={order.orderIdx} order={order} />
@@ -69,12 +82,30 @@ const PaymentHistoryPage = () => {
           successOrders?.map((order) => (
             <PaymentHistoryCard key={order.orderIdx} order={order} />
           ))}
-        {type === "failure" &&
+        {type === "cancel" &&
           cancelOrders?.map((order) => (
             <PaymentHistoryCard key={order.orderIdx} order={order} />
           ))}
       </div>
     </div>
+  );
+};
+
+// 로딩 상태를 위한 fallback 컴포넌트
+const PaymentHistoryLoading = () => (
+  <div className="bg-[#F1F5F9] min-h-screen flex items-center justify-center">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+      <p className="mt-4 text-gray-600">결제 내역을 불러오는 중...</p>
+    </div>
+  </div>
+);
+
+const PaymentHistoryPage = () => {
+  return (
+    <Suspense fallback={<PaymentHistoryLoading />}>
+      <PaymentHistoryContent />
+    </Suspense>
   );
 };
 

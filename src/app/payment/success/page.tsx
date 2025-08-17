@@ -7,8 +7,10 @@ import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-const PaymentSuccessPage = () => {
+// useSearchParams를 사용하는 컴포넌트를 별도로 분리
+const PaymentSuccessContent = () => {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId") ?? "";
   const { user } = useUserStore();
@@ -51,40 +53,55 @@ const PaymentSuccessPage = () => {
           </span>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-[#667085] font-medium text-[16px]">이메일</span>
-          <span className="text-[16px] font-medium text-[#344054]">
-            {order?.email}
-          </span>
-        </div>
-        <div className="flex justify-between items-center">
           <span className="text-[#667085] font-medium text-[16px]">
-            결제수단
-          </span>
-          <span className="text-[16px] font-medium text-[#344054]">
-            신용카드
-          </span>
-        </div>
-        <div className="flex justify-between items-center">
-          <span className="text-[#667085] font-medium text-[16px]">
-            총 결제금액
+            결제금액
           </span>
           <span className="text-[16px] font-semibold text-[#344054]">
-            {order?.amount.toLocaleString()}원
+            {order?.amount?.toLocaleString()}원
+          </span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-[#667085] font-medium text-[16px]">
+            주문번호
+          </span>
+          <span className="text-[16px] font-medium text-[#344054]">
+            {order?.orderId}
           </span>
         </div>
       </div>
-      <div className="flex flex-col gap-5">
-        <span className="text-center font-medium text-[16px] text-[#344054]">
-          나의 이벤트에서 이벤트를 생성하여 <br /> 바로 이용해보세요.
-        </span>
+      <div className="flex gap-3">
         <Link
-          href={`/host/${user?.userIdx}`}
-          className="w-full rounded-xl h-[53px] bg-[#359EFF] flex items-center justify-center text-white font-semibold text-[20px]"
+          href="/"
+          className="flex-1 bg-white rounded-lg py-4 text-center text-[16px] font-semibold text-[#344054]"
         >
-          나의 이벤트로 이동
+          홈으로
+        </Link>
+        <Link
+          href="/payment/history"
+          className="flex-1 bg-[#359EFF] rounded-lg py-4 text-center text-[16px] font-semibold text-white"
+        >
+          결제 내역
         </Link>
       </div>
     </div>
+  );
+};
+
+// 로딩 상태를 위한 fallback 컴포넌트
+const PaymentSuccessLoading = () => (
+  <div className="bg-[#F1F5F9] h-screen flex items-center justify-center">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+      <p className="mt-4 text-gray-600">결제 완료 정보를 불러오는 중...</p>
+    </div>
+  </div>
+);
+
+const PaymentSuccessPage = () => {
+  return (
+    <Suspense fallback={<PaymentSuccessLoading />}>
+      <PaymentSuccessContent />
+    </Suspense>
   );
 };
 

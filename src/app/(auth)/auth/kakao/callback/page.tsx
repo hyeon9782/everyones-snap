@@ -1,13 +1,14 @@
 // app/auth/kakao/callback/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { httpClient } from "@/shared/api/base-client";
 import { useUserStore } from "@/features/login/model/store";
 import { setCookie } from "@/shared/lib/cookie-utils";
 
-const KakaoCallbackPage = () => {
+// useSearchParams를 사용하는 컴포넌트를 별도로 분리
+const KakaoCallbackContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
@@ -34,8 +35,9 @@ const KakaoCallbackPage = () => {
         });
 
         // 응답 구조에 따라 수정 필요
-        if (response.data && response.data.message === "success") {
-          const { data } = response.data;
+        const responseData = response.data as any;
+        if (responseData && responseData.message === "success") {
+          const { data } = responseData;
 
           if (data.isNewUser) {
             // 새 사용자인 경우 sessionStorage에 id 저장하고 term 페이지로 이동
@@ -65,7 +67,7 @@ const KakaoCallbackPage = () => {
             router.push(`/host/${data.userIdx}`);
           }
         } else {
-          throw new Error(response.data?.message || "Login failed");
+          throw new Error(responseData?.message || "Login failed");
         }
       } catch (err) {
         console.error("Login error:", err);
@@ -106,6 +108,24 @@ const KakaoCallbackPage = () => {
   }
 
   return null;
+};
+
+// 로딩 상태를 위한 fallback 컴포넌트
+const KakaoCallbackLoading = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+      <p className="mt-4 text-gray-600">카카오 로그인 콜백을 처리하는 중...</p>
+    </div>
+  </div>
+);
+
+const KakaoCallbackPage = () => {
+  return (
+    <Suspense fallback={<KakaoCallbackLoading />}>
+      <KakaoCallbackContent />
+    </Suspense>
+  );
 };
 
 export default KakaoCallbackPage;

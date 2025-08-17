@@ -7,9 +7,10 @@ import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 
-const PaymentPage = () => {
+// useSearchParams를 사용하는 컴포넌트를 별도로 분리
+const PaymentContent = () => {
   const searchParams = useSearchParams();
   const planIdx = searchParams.get("planIdx");
   const { data: plans } = usePlans();
@@ -25,11 +26,13 @@ const PaymentPage = () => {
   const { processPayment, isLoading } = usePayment();
 
   const handlePayment = () => {
+    if (!plan?.planIdx || !user?.userIdx) return;
+
     processPayment({
-      planIdx: plan?.planIdx ?? 0,
-      productName: plan?.name ?? "",
-      amount: plan?.price ?? 0,
-      userIdx: user?.userIdx,
+      planIdx: plan.planIdx,
+      productName: plan.name ?? "",
+      amount: plan.price ?? 0,
+      userIdx: user.userIdx,
       email,
     });
   };
@@ -138,6 +141,24 @@ const PaymentPage = () => {
         결제하기
       </Button>
     </div>
+  );
+};
+
+// 로딩 상태를 위한 fallback 컴포넌트
+const PaymentLoading = () => (
+  <div className="bg-[#F1F5F9] h-screen flex items-center justify-center">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+      <p className="mt-4 text-gray-600">결제 페이지를 불러오는 중...</p>
+    </div>
+  </div>
+);
+
+const PaymentPage = () => {
+  return (
+    <Suspense fallback={<PaymentLoading />}>
+      <PaymentContent />
+    </Suspense>
   );
 };
 

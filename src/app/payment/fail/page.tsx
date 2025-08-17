@@ -7,8 +7,10 @@ import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-const FailPage = () => {
+// useSearchParams를 사용하는 컴포넌트를 별도로 분리
+const FailContent = () => {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId") ?? "";
   const { user } = useUserStore();
@@ -69,7 +71,7 @@ const FailPage = () => {
             총 결제금액
           </span>
           <span className="text-[16px] font-semibold text-[#344054]">
-            {order?.amount.toLocaleString()}원
+            {order?.amount?.toLocaleString()}원
           </span>
         </div>
       </div>
@@ -82,6 +84,24 @@ const FailPage = () => {
         </Link>
       </div>
     </div>
+  );
+};
+
+// 로딩 상태를 위한 fallback 컴포넌트
+const FailLoading = () => (
+  <div className="bg-[#F1F5F9] h-screen flex items-center justify-center">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+      <p className="mt-4 text-gray-600">결제 실패 정보를 불러오는 중...</p>
+    </div>
+  </div>
+);
+
+const FailPage = () => {
+  return (
+    <Suspense fallback={<FailLoading />}>
+      <FailContent />
+    </Suspense>
   );
 };
 
