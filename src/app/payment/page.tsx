@@ -18,7 +18,7 @@ const PaymentPage = () => {
 
   const { user } = useUserStore();
 
-  const [email, setEmail] = useState(user?.email ?? "");
+  const [email, setEmail] = useState(user?.kakaoProfile?.email ?? "");
 
   const plan = plans?.find((plan) => plan.planIdx === Number(planIdx));
 

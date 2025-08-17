@@ -13,20 +13,8 @@ export const login = async ({ code, platformType }: LoginRequest) => {
   });
 };
 
-export const signup = async ({
-  id,
-  platformType,
-  personalInfo,
-  terms,
-  marketing,
-}: SignupRequest) => {
+export const signup = async (payload: SignupRequest) => {
   return httpClient
-    .post("/v1/users/signUp", {
-      id,
-      platformType,
-      personalInfo,
-      terms,
-      marketing,
-    })
+    .post("/v1/users/signUp", payload)
     .then((res) => (res.data as any).data as SignupResponse);
 };

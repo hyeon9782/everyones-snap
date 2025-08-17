@@ -1,6 +1,7 @@
 "use client";
 
 import { useUserStore } from "@/features/login/model/store";
+import { useDeleteUser } from "@/features/user-delete/api/api";
 import { Button } from "@/shared/ui/button";
 import { MenuIcon } from "lucide-react";
 import Link from "next/link";
@@ -13,6 +14,7 @@ const Header = () => {
   const pathname = usePathname();
 
   const { user, logout } = useUserStore();
+  const { mutateAsync: deleteUser } = useDeleteUser();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -25,10 +27,23 @@ const Header = () => {
   const isLoging = user?.userIdx ? true : false;
 
   const handleLogoutClick = () => {
-    alert("로그아웃");
     logout();
     router.push("/login");
     closeMenu();
+  };
+
+  const handleDeleteUserClick = async () => {
+    try {
+      const response = await deleteUser({ userIdx: user?.userIdx! });
+      console.log("response", response);
+
+      logout();
+      router.push("/login");
+      closeMenu();
+    } catch (error) {
+      console.error(error);
+      alert("회원탈퇴에 실패했습니다.");
+    }
   };
 
   // pathname이 변경될 때마다 메뉴 자동으로 닫기
@@ -104,6 +119,12 @@ const Header = () => {
                   className="flex justify-center items-center w-full px-4 py-3 text-black hover:bg-blue-50 rounded-lg text-[16px] font-semibold transition-colors duration-200"
                 >
                   로그아웃
+                </button>
+                <button
+                  onClick={handleDeleteUserClick}
+                  className="flex justify-center items-center w-full px-4 py-3 text-black hover:bg-blue-50 rounded-lg text-[16px] font-semibold transition-colors duration-200"
+                >
+                  회원탈퇴
                 </button>
               </>
             )}

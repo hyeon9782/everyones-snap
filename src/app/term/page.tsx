@@ -5,6 +5,7 @@ import { Button } from "@/shared/ui/button";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useUserStore } from "@/features/login/model/store";
 
 const TermPage = () => {
   const [terms, setTerms] = useState(false);
@@ -15,12 +16,17 @@ const TermPage = () => {
   const [code, setCode] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const router = useRouter();
+  const { setUser } = useUserStore();
 
   // sessionStorage에서 id 값 가져오기
   useEffect(() => {
     const storedId = sessionStorage.getItem("tempUserId");
     const storedCode = sessionStorage.getItem("tempCode");
     const storedEmail = sessionStorage.getItem("tempEmail");
+
+    console.log("storedId", storedId);
+    console.log("storedCode", storedCode);
+    console.log("storedEmail", storedEmail);
 
     if (!storedId || !storedCode || !storedEmail) {
       // id가 없으면 로그인 페이지로 리다이렉트
@@ -53,6 +59,13 @@ const TermPage = () => {
     if (!requiredChecked || !id) return;
 
     try {
+      console.log("id", id);
+      console.log("code", code);
+      console.log("email", email);
+      console.log("personalInfo", personalInfo);
+      console.log("terms", terms);
+      console.log("marketing", marketing);
+
       const response = await signup({
         id: id ?? "",
         code: code ?? "",
@@ -62,6 +75,8 @@ const TermPage = () => {
         terms: terms ? "y" : "n",
         marketing: marketing ? "y" : "n",
       });
+
+      setUser(response);
 
       router.push(`/host/${response.userIdx}`);
     } catch (error) {

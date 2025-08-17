@@ -2,6 +2,11 @@ export type User = {
   accessToken: string;
   refreshToken: string;
   isNewUser: boolean;
+  kakaoProfile: {
+    nickname: string;
+    email: string;
+    profileImage: string;
+  };
   userIdx: number;
   id: string;
   platformType: "kakao";
